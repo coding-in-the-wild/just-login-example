@@ -18,7 +18,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "tap ./test/*.js"
+    "test": "tap ./test/*.js",
+    "build": "browserify example-client.js > client-b.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
@@ -29,6 +30,7 @@
     "level-mem": "^0.18.0",
     "ractive": "^0.4.0",
     "router": "^0.6.2",
+    "send": "^0.5.0",
     "shoe": "0.0.15"
   },
   "bugs": {
