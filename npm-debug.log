@@ -1,0 +1,30 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'build' ]
+2 info using npm@1.4.9
+3 info using node@v0.10.28
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
+6 info prebuild just-login-example@0.0.1
+7 info build just-login-example@0.0.1
+8 verbose unsafe-perm in lifecycle true
+9 info just-login-example@0.0.1 Failed to exec build script
+10 error just-login-example@0.0.1 build: `browserify example-client.js > static/client-b.js`
+10 error Exit status 1
+11 error Failed at the just-login-example@0.0.1 build script.
+11 error This is most likely a problem with the just-login-example package,
+11 error not with npm itself.
+11 error Tell the author that this fails on your system:
+11 error     browserify example-client.js > static/client-b.js
+11 error You can get their info via:
+11 error     npm owner ls just-login-example
+11 error There is likely additional logging output above.
+12 error System Windows_NT 6.1.7601
+13 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "build"
+14 error cwd C:\Github\just-login-example
+15 error node -v v0.10.28
+16 error npm -v 1.4.9
+17 error code ELIFECYCLE
+18 verbose exit [ 1, true ]
