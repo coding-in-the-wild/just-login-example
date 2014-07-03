@@ -1,7 +1,7 @@
 var JustLoginEmailer = require('just-login-emailer')
 var Ractive = require('ractive')
 
-module.exports = function(core) {
+module.exports = function(emitter) {
 	var emailSendingOptions = {
 		host: 'mail.fiddlebutt.com',
 		auth: {
@@ -26,5 +26,5 @@ module.exports = function(core) {
 		}).toHTML()
 	}
 
-	JustLoginEmailer(core, createHtmlEmail, emailSendingOptions, defaultMailOptions)
+	JustLoginEmailer(emitter, createHtmlEmail, emailSendingOptions, defaultMailOptions)
 }
