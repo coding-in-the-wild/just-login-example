@@ -1,7 +1,7 @@
 {
   "name": "just-login-example",
   "version": "0.0.1",
-  "main": "./index.js",
+  "main": "./server.js",
   "author": "ArtskydJ <josephdykstra@gmail.com>",
   "description": "Browser code for the just-login-core and just-login-emailer",
   "keywords": [
@@ -24,16 +24,15 @@
   "dependencies": {
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
-    "ecstatic": "^0.5.4",
-    "just-login-core": "0.0.1",
-    "just-login-server-api": "0.0.1",
+    "just-login-core": "^0.0.1",
+    "just-login-server-api": "^0.0.1",
     "level-mem": "^0.18.0",
     "nodemailer": "^0.7.0",
     "ractive": "^0.4.0",
-    "router": "^0.6.2",
     "send": "^0.5.0",
     "shoe": "0.0.15",
-    "xtend": "^3.0.0"
+    "xtend": "^3.0.0",
+    "superagent": "^0.18.0"
   },
   "bugs": {
     "url": "https://github.com/ArtskydJ/just-login-example/issues"
