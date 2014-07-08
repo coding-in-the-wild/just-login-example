@@ -1,6 +1,7 @@
 var url = require('url')
 var send = require('send')
 var api = require('just-login-server-api')
+var dnode = require('dnode')
 
 var requestListener = function requestListener(req, res) {
 	send(req, url.parse(req.url).pathname, {root: "./static/"})
@@ -20,8 +21,13 @@ var requestListener = function requestListener(req, res) {
 			//res.setHeader('Content-Disposition', 'attachment'); //this made me download the file
 		})
 		.pipe(res)
+}
 
-	/*var sock = shoe(function (stream) {
+var server = http.createServer(requestListener)
+server.listen(9999)
+
+	/*
+	var sock = shoe(function (stream) {
 		var d = dnode(api)
 		d.pipe(stream).pipe(d)
 	})
@@ -36,8 +42,33 @@ var requestListener = function requestListener(req, res) {
 	});
 
 	server.listen(5004);*/
-}
+module.exports = server
 
-module.exports = function() {
-	return require('http').createServer(requestListener)
-}
+/*
+var dnode = require('dnode')
+var browserApi = require('./browserApi.js')
+var fs = require('fs')
+var http = require('http')
+var shoe = require('shoe')
+//var send = require('send')
+
+
+//var server = http.createServer();
+//server.listen(9999);
+//server.on('request', function(req, res) {
+var server = http.createServer().listen(9999).on('request', function(req, res) {
+	console.log("connection initiated")
+	fs.readFile("./client-b.js", {encoding:'utf8'}, function(err, data) {
+		if (err)
+			res.end('<h1>joseph</h1>', 'utf8')
+		else
+			res.end("<script>"+data+"</script>", 'utf8')
+	})
+})
+
+var sock = shoe(function (stream) {
+	var d = dnode(browserApi)
+	d.pipe(stream).pipe(d)
+})
+sock.install(server, '/dnode')
+*/
