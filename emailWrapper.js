@@ -19,7 +19,7 @@ module.exports = function(emitter) {
 		return new Ractive({
 			el: '',
 			template: Ractive.parse('<div>You should totally log in!<br />'
-				+ 'Click <a href="http://somesite.com/login?secretCode={{token}}">here!</a></div>'),
+				+ 'Click <a href="http://localhost:9999/login.html?secretCode={{token}}">here!</a></div>'),
 			data: {
 				token: loginToken
 			}
