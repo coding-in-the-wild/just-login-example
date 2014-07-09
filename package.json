@@ -12,6 +12,7 @@
     "url": "https://github.com/ArtskydJ/just-login-example"
   },
   "devDependencies": {
+    "superagent": "^0.18.0",
     "tap": "~0.4.8"
   },
   "directories": {
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "test": "tap ./test/*.js",
-    "build": "browserify example-client.js > static/client-b.js"
+    "build": "browserify client.js > static/client-b.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
@@ -31,8 +32,7 @@
     "ractive": "^0.4.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
-    "xtend": "^3.0.0",
-    "superagent": "^0.18.0"
+    "xtend": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/ArtskydJ/just-login-example/issues"
