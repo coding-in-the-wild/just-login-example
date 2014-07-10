@@ -1,11 +1,17 @@
 var test = require('tap').test
-var Server = require('../')
+var server = require('../')
 var http = require('http')
 var shoe = require('shoe')
 var dnode = require('dnode')
 
+test('this aint a test', function (t) {
+	t.ok(true, "hi")
+	t.end()
+})
+
+test = function() {} //horrible lol haha
+
 test('server has dnode', function (t) { //dnode running and exposing api
-	var server = Server()
 	server.listen(9999, function() {
 		//var stream = shoe("/dnode")
 		var d = dnode()

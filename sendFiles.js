@@ -3,6 +3,8 @@ var url = require('url')
 var fs = require('fs')
 var http = require('http')
 
+var LOUD = false
+
 module.exports = function sendFiles(req, res, dir) {
 	send(req, url.parse(req.url).pathname, {root: dir})
 		.on('error', function (err) {
@@ -17,17 +19,17 @@ module.exports = function sendFiles(req, res, dir) {
 			}
 		})
 		.on('file', function (path, stat) {
-			console.log("file req:",path)
+			if (LOUD) console.log("file req:",path)
 		})
 		.on('directory', function() {
-			console.log("directory")
+			if (LOUD) console.log("directory")
 			res.statusCode = 301;
 				res.setHeader('Location', req.url + 'index.html')
 				res.end('Redirecting to ' + req.url + '/index.html')
 		}).on('headers', function (res, path, stat) {
-			console.log('headers')
+			if (LOUD) console.log('headers')
 			//res.setHeader('Content-Disposition', 'attachment') //this made me download the file lol
 	//	}).on('stream', function (stream) {
-	//		console.log("streaming:", stream)
+	//		if (LOUD) console.log("streaming:", stream)
 		}).pipe(res)
 }
