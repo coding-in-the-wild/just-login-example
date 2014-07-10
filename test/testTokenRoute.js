@@ -8,7 +8,7 @@ test('server re-routes for token', function (t) { //does stuff when magic token
 	server.listen(9999, function() {
 		console.log("before req")
 		request
-			.get("localhost:9999/login?secretCode=abcdefghijklmnopqrstuvwxyz123456") //uuid
+			.get("localhost:9999/login.html?secretCode=aaaaaaaabbbbbbbbccccccccdddddddd") //uuid
 			.end(function (res) {
 				t.ok(res, "got a response")
 				t.equal(res.text, "it works", "it works")

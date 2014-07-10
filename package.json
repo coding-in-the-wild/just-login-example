@@ -20,15 +20,15 @@
   },
   "scripts": {
     "test": "tap ./test/*.js",
-    "build": "browserify client.js > static/client-b.js"
+    "build": "browserify client.js -o static/client-b.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
-    "domready": "^1.0.5",
+    "just-login-client": "0.0.1",
     "just-login-core": "^0.0.1",
+    "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^0.0.1",
     "level-mem": "^0.18.0",
-    "nodemailer": "^0.7.0",
     "ractive": "^0.4.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
