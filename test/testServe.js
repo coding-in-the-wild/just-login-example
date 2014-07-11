@@ -1,5 +1,5 @@
 var test = require('tap').test
-var Server = require('../index.js')
+var Server = require('../server-src/index.js')
 var request = require('superagent')
 
 test('server serves files', function (t) { //serving files

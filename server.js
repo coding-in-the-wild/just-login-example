@@ -1,2 +1,2 @@
-var server = require('./index.js')
+var server = require('./server-src/index.js')
 server().listen(9999)

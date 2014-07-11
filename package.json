@@ -20,11 +20,11 @@
   },
   "scripts": {
     "test": "tap ./test/*.js",
-    "build": "browserify client.js -d -o static/client-b.js"
+    "build": "browserify client-src/index.js -d -o static/client-b.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
-    "just-login-client": "^0.0.1",
+    "just-login-client": "^1.0.0",
     "just-login-core": "^1.0.2",
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
