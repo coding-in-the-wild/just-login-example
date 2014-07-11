@@ -1,6 +1,5 @@
 var send = require('send')
 var url = require('url')
-var fs = require('fs')
 var http = require('http')
 
 var LOUD = false

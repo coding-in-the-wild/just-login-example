@@ -1,9 +1,9 @@
 var test = require('tap').test
-var server = require('../')
-var http = require('http')
+var Server = require('../index.js')
 var request = require('superagent')
 
 test('server re-routes for token', function (t) { //does stuff when magic token
+	var server = new Server()
 	server.listen(9999, function() {
 		//console.log("before req")
 		request

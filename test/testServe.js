@@ -1,10 +1,10 @@
 var test = require('tap').test
-var server = require('../')
-var http = require('http')
+var Server = require('../index.js')
 var request = require('superagent')
 
 test('server serves files', function (t) { //serving files
-	
+	var server = new Server()
+
 	server.listen(9999)
 
 	server.on('listening', function() {

@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "tap ./test/*.js",
-    "build": "browserify client.js -o static/client-b.js"
+    "build": "browserify client.js -d -o static/client-b.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
