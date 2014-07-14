@@ -12,8 +12,6 @@ module.exports = function (config) {
 	var stream = Shoe('/dnode')
 	var d = Dnode()
 	d.on('remote', function (remote) {
-		if (config.loud) console.log("successful connection, remote:")
-		if (config.loud) console.dir(remote)
 		window.emitter = createSession(remote, function (err, api, sessionId) {
 			if (config.loud) console.log("create new session initiated")
 			if (err) {
