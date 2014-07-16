@@ -2,7 +2,7 @@ var url = require('url')
 var parseQuerystring = require('querystring').parse
 var http = require('http')
 var sendFiles = require('./sendFiles.js')
-//var sendEmailOnAuth = require('./emailWrapper.js')
+var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
 
@@ -19,16 +19,17 @@ module.exports = function createServer(config) {
 	var db = Level('uniqueNameHere')
 	var jlc = Jlc(db)
 	var jlsa = Jlsa(jlc)
-	//sendEmailOnAuth(jlc)
+	sendEmailOnAuth(jlc)
 
 	jlc.on('authentication initiated', function(loginRequest) {
-		console.log("Pretend that an email got sent to " + loginRequest.contactAddress + " with a token of " + loginRequest.token)
+		console.log("Pretend that an email got sent to " +
+			loginRequest.contactAddress + " with a token of " + loginRequest.token)
 	})
 
 	var server = http.createServer(function requestListener(req, res) {
 		var pathname = url.parse(req.url).pathname
 		if (config.loud) console.log("pathname:", pathname)
-		if (pathname.slice(0, DNODE_ENDPOINT.length + 1) == DNODE_ENDPOINT + "/") {
+		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
 			if (config.loud) console.log("hit dnode...")
 		} else if (pathname == TOKEN_ENDPOINT) {
 			var query = url.parse(req.url).query
@@ -42,7 +43,7 @@ module.exports = function createServer(config) {
 						res.end('ok you\'re logged in as ' + addr)
 					} else {
 						res.statusCode = 400
-						res.end('what are you doing that\'s not a valid token apparently')
+						res.end('hey that\'s not a valid token apparently')
 					}
 				})
 			} else {

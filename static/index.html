@@ -3,9 +3,8 @@
 	<H1>Just Login</H1>
 	<SCRIPT src="./client-b.js"></SCRIPT>
 	<SCRIPT>
-		function showOutput(contactAddress) {
+		function sendEmail(contactAddress) {
 			globalApi.beginAuthentication(contactAddress)
-			//alert("Try to log in "+message);
 		}
 	</SCRIPT>
 	<BODY>
@@ -13,7 +12,7 @@
 			<INPUT name="email" id="txtEmail" type="text"
 				onKeyDown="if (event.keyCode == 13) document.getElementById('btnLogin').click()">
 			<INPUT name="login" id="btnLogin" type="button" value="Log Me In"
-				onClick="showOutput(txtEmail.value)">
+				onClick="sendEmail(txtEmail.value)">
 		<!--</FORM>-->
 	</BODY>
 </HTML>

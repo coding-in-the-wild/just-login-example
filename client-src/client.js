@@ -1,27 +1,11 @@
-var Shoe = require('shoe')
-var Dnode = require('dnode')
-var createSession = require('just-login-client')
+var client = require('just-login-client')
 
-module.exports = function (config) {
-	var defaultConfig = {
-		loud: true
-	}
-	config = config || defaultConfig
-	if (config.loud) console.log("initiated")
-
-	var stream = Shoe('/dnode')
-	var d = Dnode()
-	d.on('remote', function (remote) {
-		window.emitter = createSession(remote, function (err, api, sessionId) {
-			if (config.loud) console.log("create new session initiated")
-			if (err) {
-				console.log("uh oh err:", err.message)
-				console.dir(err)
-			} else {
-				globalApi = api //yes, global
-			}
-		})
-
+module.exports = function () {
+	client(function (err, api, sessionId) {
+		if (err) {
+			console.error(err)
+		} else {
+			globalApi = api //purposeful omission of 'var'
+		}
 	})
-	d.pipe(stream).pipe(d);
 }

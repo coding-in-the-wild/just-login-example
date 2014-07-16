@@ -1,17 +1,20 @@
 var JustLoginEmailer = require('just-login-emailer')
 var Ractive = require('ractive')
+var password = require('../../#sensitive-info/just-login-email-opts.js')
+var hostOpts = {
+	host: 'smtp.gmail.com',
+	port: 465,
+	secure: true,
+	auth: {
+		user: 'justloginexample@gmail.com',
+		pass: password
+	}
+}
 
 module.exports = function(core) {
-	var emailSendingOptions = {
-		host: 'mail.fiddlebutt.com',
-		auth: {
-			user: 'login@fiddlebutt.com',
-			pass: ''
-		}
-	}
 	var defaultMailOptions = {
-		from: 'login@fiddlebutt.com',
-		replyTo: 'no-reply@fiddlebutt.com',
+		from: 'justloginexample@gmail.com',
+		//replyTo: 'justloginexample@gmail.com',
 		subject: 'Login to this site!'
 	}
 
@@ -19,12 +22,12 @@ module.exports = function(core) {
 		return new Ractive({
 			el: '',
 			template: Ractive.parse('<div>You should totally log in!<br />'
-				+ 'Click <a href="http://localhost:9999/login.html?secretCode={{token}}">here!</a></div>'),
+				+ 'Click <a href="http://localhost:9999/magical-login?secretCode={{token}}">here!</a></div>'),
 			data: {
 				token: loginToken
 			}
 		}).toHTML()
 	}
 
-	JustLoginEmailer(core, createHtmlEmail, emailSendingOptions, defaultMailOptions)
+	JustLoginEmailer(core, createHtmlEmail, hostOpts, defaultMailOptions)
 }
