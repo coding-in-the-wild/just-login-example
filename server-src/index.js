@@ -5,7 +5,6 @@ var sendFiles = require('./sendFiles.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
-
 var Jlsa = require('just-login-server-api')
 var Jlc = require('just-login-core')
 var Level = require('level-mem')
@@ -14,28 +13,21 @@ var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode"
 var TOKEN_ENDPOINT = "/magical-login"
 
-module.exports = function createServer(config) {
-	config = config || {}
+module.exports = function createServer() {
 	var db = Level('uniqueNameHere')
 	var jlc = Jlc(db)
 	var jlsa = Jlsa(jlc)
-	sendEmailOnAuth(jlc)
 
-	jlc.on('authentication initiated', function(loginRequest) {
-		console.log("Pretend that an email got sent to " +
-			loginRequest.contactAddress + " with a token of " + loginRequest.token)
-	})
+	sendEmailOnAuth(jlc)
 
 	var server = http.createServer(function requestListener(req, res) {
 		var pathname = url.parse(req.url).pathname
-		if (config.loud) console.log("pathname:", pathname)
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
-			if (config.loud) console.log("hit dnode...")
 		} else if (pathname == TOKEN_ENDPOINT) {
-			var query = url.parse(req.url).query
-			var token = parseQuerystring(query).token
-			if (token && token.length > 0) {
-				jlc.authenticate(token, function (err, addr) {
+			var query = url.parse(req.url).query //get query, e.g. "?token=hexCode"
+			var token = parseQuerystring(query).token //get token, e.g. {token: "hexCode"}
+			if (token && token.length > 0) { //If the token looks ok...
+				jlc.authenticate(token, function (err, addr) { //...then try it
 					if (err) {
 						res.statusCode = 500
 						res.end(err.message)

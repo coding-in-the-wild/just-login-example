@@ -14,7 +14,6 @@ var hostOpts = {
 module.exports = function(core) {
 	var defaultMailOptions = {
 		from: 'justloginexample@gmail.com',
-		//replyTo: 'justloginexample@gmail.com',
 		subject: 'Login to this site!'
 	}
 
@@ -22,12 +21,14 @@ module.exports = function(core) {
 		return new Ractive({
 			el: '',
 			template: Ractive.parse('<div>You should totally log in!<br />'
-				+ 'Click <a href="http://localhost:9999/magical-login?secretCode={{token}}">here!</a></div>'),
+				+ 'Click <a href="http://localhost:9999/magical-login?token={{token}}">here!</a></div>'),
 			data: {
 				token: loginToken
 			}
 		}).toHTML()
 	}
 
-	JustLoginEmailer(core, createHtmlEmail, hostOpts, defaultMailOptions)
+	JustLoginEmailer(core, createHtmlEmail, hostOpts, defaultMailOptions, function (err, info) {
+
+	})
 }
