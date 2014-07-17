@@ -3,8 +3,9 @@ var events = require("events")
 
 window.emitter = new events.EventEmitter
 
-client() //sets window.emitter
+client() //sets window.emitter to a different emitter
 
+//unfortunately, this stuff seems not to be working...
 window.emitter.on('new session', function (sid) {
 	console.log("Successfully created a new session. Id:"+sid)
 	})
