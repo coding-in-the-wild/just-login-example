@@ -1,5 +1,5 @@
 var test = require('tap').test
-var Server = require('../index.js')
+var Server = require('../server-src/index.js')
 // var http = require('http')
 // var shoe = require('shoe')
 var dnode = require('dnode')

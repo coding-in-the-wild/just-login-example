@@ -3,18 +3,41 @@
 	<H1>Just Login</H1>
 	<SCRIPT src="./client-b.js"></SCRIPT>
 	<SCRIPT>
-		function showOutput(contactAddress) {
-			globalApi.beginAuthentication(contactAddress)
-			//alert("Try to log in "+message);
+		function login(contactAddress) {
+			globalApi.beginAuthentication(contactAddress, function (err) {
+				if (err) {
+					console.error(err)
+				}
+			})
+		}
+		function loggedIn() {
+			globalApi.isAuthenticated(function (err, val) {
+				if (err) {
+					console.error("error:", err.message)
+				} else if (val) {
+					alert("You are logged in as "+val)
+				} else {
+					alert("You are not logged in")
+				}
+			})
+		}
+		function logout() {
+			globalApi.unauthenticate(function (err) {
+				if (err) {
+					console.error("error:", err.message)
+				} else {
+					alert("You are logged out")
+				}
+			})
 		}
 	</SCRIPT>
 	<BODY>
-		<!--<FORM name="myForm">-->
-			<INPUT name="email" id="txtEmail" type="text"
-				onKeyDown="if (event.keyCode == 13) document.getElementById('btnLogin').click()">
-			<INPUT name="login" id="btnLogin" type="button" value="Log Me In"
-				onClick="showOutput(txtEmail.value)">
-		<!--</FORM>-->
+		Email:
+		<INPUT name="email" id="txtEmail" type="text"
+			onKeyDown="if (event.keyCode == 13) document.getElementById('btnLogin').click()">
+		<INPUT name="login" id="btnLogin" type="button" value="Login" onClick="login(txtEmail.value)">
+		<BR> <BR> <INPUT name="loggedin" id="btnLoggedIn" type="button" value="Logged in?" onClick="loggedIn()">
+		<BR> <BR> <INPUT name="logout" id="btnLogout" type="button" value="Logout" onClick="logout()">
 	</BODY>
 </HTML>
 
