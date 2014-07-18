@@ -4,7 +4,11 @@
 	<SCRIPT src="./client-b.js"></SCRIPT>
 	<SCRIPT>
 		function login(contactAddress) {
-			globalApi.beginAuthentication(contactAddress)
+			globalApi.beginAuthentication(contactAddress, function (err) {
+				if (err) {
+					console.error(err)
+				}
+			})
 		}
 		function loggedIn() {
 			globalApi.isAuthenticated(function (err, val) {

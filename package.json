@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArtskydJ/just-login-example"
+    "url": "https://github.com/coding-in-the-wild/just-login-example"
   },
   "devDependencies": {
     "superagent": "^0.18.0",
@@ -36,7 +36,7 @@
     "xtend": "^3.0.0"
   },
   "bugs": {
-    "url": "https://github.com/ArtskydJ/just-login-example/issues"
+    "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
   },
-  "homepage": "https://github.com/ArtskydJ/just-login-example"
+  "homepage": "https://github.com/coding-in-the-wild/just-login-example"
 }
