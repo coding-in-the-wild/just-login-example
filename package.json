@@ -25,6 +25,8 @@
   },
   "dependencies": {
     "dnode": "^1.2.0",
+    "dom-classes": "0.0.1",
+    "dom-event": "0.0.0",
     "just-login-client": "^1.0.0",
     "just-login-core": "^1.0.2",
     "just-login-emailer": "^1.0.0",
