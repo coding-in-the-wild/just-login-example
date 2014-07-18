@@ -20,7 +20,8 @@
   },
   "scripts": {
     "test": "tap ./test/*.js",
-    "build": "browserify client-src/index.js -d -o static/client-b.js"
+    "build": "browserify client-src/index.js -o static/build.js",
+    "watch": "watchify client-src/index.js -d -o static/build.js"
   },
   "dependencies": {
     "dnode": "^1.2.0",
