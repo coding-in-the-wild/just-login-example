@@ -9,6 +9,7 @@ var Jlsa = require('just-login-server-api')
 var Jlc = require('just-login-core')
 var Level = require('level')
 var ttl = require('level-ttl')
+var sublevel = require('sublevel')
 
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode"
@@ -18,7 +19,8 @@ module.exports = function createServer() {
 	var db = Level('./mydb')
 	db = ttl(db, { checkFrequency: 10*1000 }) //10 sec check time
 	db.ttl('foo', 1000 * 60 * 60) //delete keys after 1 hr
-	var jlc = Jlc(db)
+	db = sublevel(db)
+	var jlc = Jlc(db.sublevel('jlc'))
 	var jlsa = Jlsa(jlc)
 	sendEmailOnAuth(jlc)
 
@@ -49,8 +51,38 @@ module.exports = function createServer() {
 		}
 	})
 
+	var dnodeApi = jlsa
+	var clickCountingDb = db.sublevel('click-counting')
+
+	dnodeApi.checkAuthenticationStatusAndIncrementCounter = function(sessionId, cb) {
+		jlc.isAuthenticated(sessionId, function(err, name) {
+			if (err || !name) {
+				return cb(err, name)
+			}
+			clickCountingDb.get(name, function(err, value) {
+				var count
+				if (err && err.notFound) {
+					count = 0
+				} else if (err) {
+					return cb(err)
+				} else {
+					count = parseInt(value)
+				}
+
+				if (isNaN(count)) {
+					count = 1
+				} else {
+					count = count + 1
+				}
+				clickCountingDb.put(name, count, function(err) {
+					cb(err, count)
+				})
+			})
+		})
+	}
+
 	var sock = shoe(function(stream) {
-		var d = dnode(jlsa)
+		var d = dnode(dnodeApi)
 		d.pipe(stream).pipe(d)
 	})
 	sock.install(server, DNODE_ENDPOINT)

@@ -1,32 +1,68 @@
 var client = require('just-login-client')
-var classes = require('dom-classes')
-var on = require('dom-event')
+var LoginView = require('./login-view')
+var AuthenticatedStuffView = require('./authenticated-stuff')
+var domready = require('domready')
+var Shoe = require('shoe')
+var Dnode = require('dnode')
 
-var emitter = client(function (err, api, sessionId) {
-	if (err) {
-		console.log(err.message)
-	} else {
-		api.isAuthenticated(function(err, name) {
-			console.log("got back", err, name)
-			if (name) {
-				alert("oh hey you were logged in already as " + name)
-			} else {
-				var btn = document.getElementById('login-button')
-				classes.remove(btn, 'pure-button-disabled')
+domready(function() {
+	var loginView = LoginView()
+	var authenticatedStuffView = null
+	var checkAuthenticationStatusAndIncrementCounter = null
+	var loggedInNow = null
 
-				on(btn, 'click', function() {
-					var emailAddress = document.getElementById('login-email-address').value
-					api.beginAuthentication(emailAddress, function(err, obj) {
-						console.log(err, obj)
-					})
+	var apiEmitter = client(function(err, api, sessionId) {
+		loggedInNow = function loggedInNow(name) {
+			loginView.emit('authenticate', name)
+			if (!authenticatedStuffView) {
+				authenticatedStuffView = AuthenticatedStuffView()
+				authenticatedStuffView.on('check', function() {
+					if (checkAuthenticationStatusAndIncrementCounter) {
+						checkAuthenticationStatusAndIncrementCounter(sessionId, function(err, count) {
+							if (err || typeof count !== 'number') {
+								console.log(err, count)
+								authenticatedStuffView.emit('notAuthenticated')
+								loginView.emit('notAuthenticated')
+							} else {
+								authenticatedStuffView.emit('countUpdated', count)
+							}
+						})
+					} else {
+						console.log('oops')
+					}
 				})
+			} else {
+				authenticatedStuffView.emit('authenticate')
+			}
+		}
+
+		api.isAuthenticated(function(err, name) {
+			if (name) {
+				loggedInNow(name)
 			}
 		})
-	}
-})
 
-emitter.on('authenticated', function(name) {
-	alert("You're logged in as " + name)
-})
+		loginView.on('login', function(emailAddress) {
+			api.beginAuthentication(emailAddress, function(err, obj) {
+				if (err) {
+				}
+			})
+		})
 
-//emitter.on('continue session')
+		loginView.on('logout', function() {
+			api.unauthenticate(function() {})
+		})
+	})
+
+	apiEmitter.on('authenticated', function(name) {
+		loggedInNow(name)
+	})
+
+
+	var stream = Shoe('/dnode')
+	var d = Dnode()
+	d.on('remote', function (api) {
+		checkAuthenticationStatusAndIncrementCounter = api.checkAuthenticationStatusAndIncrementCounter
+	})
+	d.pipe(stream).pipe(d);
+})

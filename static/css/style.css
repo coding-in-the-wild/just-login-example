@@ -1,3 +1,11 @@
-.splash-head input {
-	margin-bottom: 0;
+.server-said-stuff-box {
+	margin-top: 20px;
+}
+
+.youre-totally-logged-in {
+	font-size: 2em;
+}
+
+#the-well-with-the-buttons-and-stuff button {
+	width: 100%;
 }

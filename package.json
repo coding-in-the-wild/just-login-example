@@ -25,17 +25,17 @@
   },
   "dependencies": {
     "dnode": "^1.2.0",
-    "dom-classes": "0.0.1",
-    "dom-event": "0.0.0",
+    "domready": "^1.0.5",
     "just-login-client": "^1.0.0",
     "just-login-core": "^1.0.2",
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
     "level": "^0.18.0",
     "level-ttl": "^0.6.1",
-    "ractive": "^0.4.0",
+    "ractive": "^0.5.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
+    "sublevel": "^2.4.0",
     "xtend": "^3.0.0"
   },
   "bugs": {
