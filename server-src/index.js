@@ -1,37 +1,52 @@
 var url = require('url')
 var parseQuerystring = require('querystring').parse
+
 var http = require('http')
 var sendFiles = require('./sendFiles.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
-var Jlsa = require('just-login-server-api')
-var Jlc = require('just-login-core')
+var JustLoginServerApi = require('just-login-server-api')
+var JustLoginCore = require('just-login-core')
 var Level = require('level')
-var ttl = require('level-ttl')
 var sublevel = require('sublevel')
+var ttl = require('level-ttl')
+var Cache = require('level-ttl-cache')
 
 var SEND_DIR = "./static/"
-var DNODE_ENDPOINT = "/dnode"
+var DNODE_ENDPOINT = "/dnode-justlogin"
 var TOKEN_ENDPOINT = "/magical-login"
 
 module.exports = function createServer() {
 	var db = Level('./mydb')
+	db = sublevel(db)
 	db = ttl(db, { checkFrequency: 10*1000 }) //10 sec check time
 	db.ttl('foo', 1000 * 60 * 60) //delete keys after 1 hr
-	db = sublevel(db)
-	var jlc = Jlc(db.sublevel('jlc'))
-	var jlsa = Jlsa(jlc)
-	sendEmailOnAuth(jlc)
+	var justLoginCore = JustLoginCore(db.sublevel('jlc'))
+	var justLoginServerApi = JustLoginServerApi(justLoginCore)
+	sendEmailOnAuth(justLoginCore)
+	var cache = new Cache({
+		db: db,
+		name: 'sessions',
+		ttl: 60 * 60 * 1000, //1 hour ttl for all entries in this cache
+		load: function (key, callback) {
+		// do some (possibly async) work to load the value for `key`
+		// and return it as the second argument to the callback,
+		// the first argument should be null unless there is an error
+		callback(null, value)
+		}
+	})
 
 	var server = http.createServer(function requestListener(req, res) {
+		console.log(typeof req.url)
 		var pathname = url.parse(req.url).pathname
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
 		} else if (pathname == TOKEN_ENDPOINT) {
 			var query = url.parse(req.url).query //get query, e.g. "?token=hexCode"
+			console.log("query:",query)
 			var token = parseQuerystring(query).token //get token, e.g. {token: "hexCode"}
 			if (token && token.length > 0) { //If the token looks ok...
-				jlc.authenticate(token, function (err, addr) { //...then try it
+				justLoginCore.authenticate(token, function (err, addr) { //...then try it
 					if (err) {
 						res.statusCode = 500
 						res.end(err.message)
@@ -51,11 +66,11 @@ module.exports = function createServer() {
 		}
 	})
 
-	var dnodeApi = jlsa
+	var dnodeApi = justLoginServerApi
 	var clickCountingDb = db.sublevel('click-counting')
 
 	dnodeApi.checkAuthenticationStatusAndIncrementCounter = function(sessionId, cb) {
-		jlc.isAuthenticated(sessionId, function(err, name) {
+		justLoginCore.isAuthenticated(sessionId, function(err, name) {
 			if (err || !name) {
 				return cb(err, name)
 			}
