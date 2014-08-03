@@ -1,5 +1,4 @@
 var url = require('url')
-var parseQuerystring = require('querystring').parse
 
 var http = require('http')
 var sendFiles = require('./sendFiles.js')
@@ -38,13 +37,14 @@ module.exports = function createServer() {
 	})
 
 	var server = http.createServer(function requestListener(req, res) {
-		console.log(typeof req.url)
-		var pathname = url.parse(req.url).pathname
+		var parsedUrl = url.parse(req.url, true) //Parse with queryString enabled
+		var pathname = parsedUrl.pathname //get pathname from url
+		var token = parsedUrl.query.token //get token from url, e.g. {token: "hexCode"}
+
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
+			//if dnode data transfer, do nothing
+			console.log("dnode!")
 		} else if (pathname == TOKEN_ENDPOINT) {
-			var query = url.parse(req.url).query //get query, e.g. "?token=hexCode"
-			console.log("query:",query)
-			var token = parseQuerystring(query).token //get token, e.g. {token: "hexCode"}
 			if (token && token.length > 0) { //If the token looks ok...
 				justLoginCore.authenticate(token, function (err, addr) { //...then try it
 					if (err) {

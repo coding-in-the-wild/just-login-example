@@ -6,6 +6,8 @@ var domready = require('domready')
 var Shoe = require('shoe')
 var Dnode = require('dnode')
 
+var DNODE_ENDPOINT = "/dnode-justlogin"
+
 domready(function() {
 	var loginView = LoginView()
 	var loginController = LoginController()
@@ -13,7 +15,7 @@ domready(function() {
 	var checkAuthenticationStatusAndIncrementCounter = null //from dnode on
 	var loggedInNow = null
 
-	var apiEmitter = client("/dnode-justlogin", function(err, api, sessionId) {
+	var apiEmitter = client(DNODE_ENDPOINT, function(err, api, sessionId) {
 		loggedInNow = function loggedInNow(name) {
 
 			loginView.emit('authenticate', name)
