@@ -1,7 +1,7 @@
 var url = require('url')
 
 var http = require('http')
-var sendFiles = require('./sendFiles.js')
+var FileSender = require('./sendFiles.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
@@ -11,12 +11,14 @@ var Level = require('level')
 var sublevel = require('sublevel')
 var ttl = require('level-ttl')
 var Cache = require('level-ttl-cache')
+var ms = require('ms')
 
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var TOKEN_ENDPOINT = "/magical-login"
 
 module.exports = function createServer() {
+	var fileSender = new FileSender( {dir: SEND_DIR} )
 	var db = Level('./mydb')
 	db = sublevel(db)
 	db = ttl(db, { checkFrequency: 10*1000 }) //10 sec check time
@@ -27,7 +29,7 @@ module.exports = function createServer() {
 	var cache = new Cache({
 		db: db,
 		name: 'sessions',
-		ttl: 60 * 60 * 1000, //1 hour ttl for all entries in this cache
+		ttl: ms('1h'), //1 hour ttl for all entries in this cache
 		load: function (key, callback) {
 		// do some (possibly async) work to load the value for `key`
 		// and return it as the second argument to the callback,
@@ -39,30 +41,34 @@ module.exports = function createServer() {
 	var server = http.createServer(function requestListener(req, res) {
 		var parsedUrl = url.parse(req.url, true) //Parse with queryString enabled
 		var pathname = parsedUrl.pathname //get pathname from url
-		var token = parsedUrl.query.token //get token from url, e.g. {token: "hexCode"}
+		var token = parsedUrl.query.token //get token from url, e.g. {token: "19ed8309a9f02c84617"}
+		//console.log("req.url:", req.url)
 
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
+			console.log("I am suprised that this is showing.")
 			//if dnode data transfer, do nothing
 			//I probably misunderstand what's happening, 'cuz this block *never* runs...
-		} else if (pathname == TOKEN_ENDPOINT) {
+		} else if (pathname === TOKEN_ENDPOINT) {
 			if (token && token.length > 0) { //If the token looks ok...
 				justLoginCore.authenticate(token, function (err, addr) { //...then try it
-					if (err) {
+					if (err) { //Bad token, and other errors
 						res.statusCode = 500
-						res.end(err.message)
-					} else if (addr) {
-						res.end('ok you\'re logged in as ' + addr)
+						fileSender(req, res, {file: "loginFailure.html"})
+					} else if (addr) { //Good token
+						fileSender(req, res, {file: "loginSuccess.html"})
 					} else {
 						res.statusCode = 400
-						res.end('hey that\'s not a valid token apparently')
+						fileSender(req, res, {file: "loginFailure.html"})
 					}
 				})
-			} else {
+			} else { //if the token doesn't even look like a token
 				res.statusCode = 400
-				res.end("wat token plz")
+				fileSender(req, res, {file: "loginFailure.html"})
 			}
 		} else {
-			sendFiles(req, res, SEND_DIR)
+			console.log("requrl:",req.url)
+			fileSender(req, res)
+			//fileSender(req, res, (!pathname || pathname === '/static/') ? {file:"index.html"} : {file:pathname})
 		}
 	})
 
