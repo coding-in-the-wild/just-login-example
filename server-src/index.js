@@ -42,7 +42,6 @@ module.exports = function createServer() {
 		var parsedUrl = url.parse(req.url, true) //Parse with queryString enabled
 		var pathname = parsedUrl.pathname //get pathname from url
 		var token = parsedUrl.query.token //get token from url, e.g. {token: "19ed8309a9f02c84617"}
-		//console.log("req.url:", req.url)
 
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
 			console.log("I am suprised that this is showing.")
@@ -66,9 +65,7 @@ module.exports = function createServer() {
 				fileSender(req, res, {file: "loginFailure.html"})
 			}
 		} else {
-			console.log("requrl:",req.url)
 			fileSender(req, res)
-			//fileSender(req, res, (!pathname || pathname === '/static/') ? {file:"index.html"} : {file:pathname})
 		}
 	})
 

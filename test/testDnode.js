@@ -9,7 +9,7 @@ test('this aint a test', function (t) {
 	t.end()
 })
 
-//test = function() {} //horrible lol haha
+test = function() {} //horrible lol haha
 
 test('server has dnode', function (t) { //dnode running and exposing api
 	var server = new Server()
@@ -25,9 +25,7 @@ test('server has dnode', function (t) { //dnode running and exposing api
 			t.equal(typeof remote.beginAuthentication, "function", "beginAuthentication is a function")
 			t.equal(typeof remote.unauthenticate, "function", "unauthenticate is a function")
 
-			server.close(function() {
-				t.end()
-			})
+			server.close(t.end.bind(t))
 		})
 		/*var c = require('net').connect(5004);
 		c.pipe(d).pipe(c);*/
