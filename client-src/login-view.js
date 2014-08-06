@@ -1,5 +1,6 @@
 var Ractive = require('ractive')
 var EventEmitter = require('events').EventEmitter
+var emailIsValid = require('email-validator').validate
 
 module.exports = function() {
 	var emitter = new EventEmitter()
@@ -18,8 +19,13 @@ module.exports = function() {
 
 	function onLoginButton() {
 		var email = ractive.get('emailAddressInput')
-		emitter.emit('login', email)
-		ractive.set('loggingIn', true)
+		if (emailIsValid(email)) {
+			emitter.emit('login', email)
+			ractive.set('loggingIn', true)
+		} else {
+			//tell the user that they're dumb, but NOT with an alert. (FIX!)
+			alert("That's not an email address!")
+		}
 	}
 
 	function onLogoutButton() {

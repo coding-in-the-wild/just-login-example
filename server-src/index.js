@@ -43,7 +43,7 @@ module.exports = function createServer() {
 
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
 			//if dnode data transfer, do nothing
-			console.log("dnode!")
+			//I probably misunderstand what's happening, 'cuz this block *never* runs...
 		} else if (pathname == TOKEN_ENDPOINT) {
 			if (token && token.length > 0) { //If the token looks ok...
 				justLoginCore.authenticate(token, function (err, addr) { //...then try it
