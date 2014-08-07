@@ -11,13 +11,13 @@ var hostOpts = {
 	}
 }
 
-module.exports = function(core) {
-	var defaultMailOptions = {
+module.exports = function(core, cb) {
+	var mailOpts = {
 		from: 'justloginexample@gmail.com',
 		subject: 'Login to this site!'
 	}
 
-	function createHtmlEmail(loginToken) {
+	function htmlEmail(loginToken) {
 		return new Ractive({
 			el: '',
 			template: Ractive.parse('<div>You should totally log in!<br />'
@@ -28,7 +28,5 @@ module.exports = function(core) {
 		}).toHTML()
 	}
 
-	JustLoginEmailer(core, createHtmlEmail, hostOpts, defaultMailOptions, function (err, info) {
-
-	})
+	JustLoginEmailer(core, htmlEmail, hostOpts, mailOpts, typeof cb === "function"? cb : function () {})
 }

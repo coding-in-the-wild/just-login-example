@@ -7,6 +7,7 @@ var Shoe = require('shoe')
 var Dnode = require('dnode')
 
 var DNODE_ENDPOINT = "/dnode-justlogin"
+var CUSTOM_ENDPOINT = "/dnode-custom"
 
 domready(function() {
 	var loginView = LoginView()
@@ -61,7 +62,7 @@ domready(function() {
 	})
 
 
-	var stream = Shoe('/dnode-justlogin') //change 'justlogin' to 'custom'
+	var stream = Shoe(CUSTOM_ENDPOINT) //change 'justlogin' to 'custom'
 	var d = Dnode()
 	d.on('remote', function (api) {
 		checkAuthenticationStatusAndIncrementCounter = api.checkAuthenticationStatusAndIncrementCounter
