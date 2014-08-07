@@ -22,7 +22,7 @@ module.exports = function createServer() {
 	var db = Level('./mydb')
 	db = sublevel(db)
 	db = ttl(db, { checkFrequency: 10*1000 }) //10 sec check time
-	db.ttl('foo', 1000 * 60 * 60) //delete keys after 1 hr
+	db.ttl('foo', ms('1h')) //delete keys after 1 hr
 	var justLoginCore = JustLoginCore(db.sublevel('jlc'))
 	var justLoginServerApi = JustLoginServerApi(justLoginCore)
 	sendEmailOnAuth(justLoginCore)
