@@ -1,2 +1,4 @@
+var Level = require('level')
+var db = Level('./mydb')
 var server = require('./server-src/index.js')
-server().listen(9999)
+server(db).listen(9999)

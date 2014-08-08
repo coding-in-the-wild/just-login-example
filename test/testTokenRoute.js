@@ -1,9 +1,10 @@
 var test = require('tap').test
 var Server = require('../server-src/index.js')
 var request = require('superagent')
+var level = require('level-mem')
 
 test('server re-routes for token', function (t) { //does stuff when magic token
-	var server = new Server()
+	var server = new Server(level('wat'))
 	server.listen(9999, function() {
 		request
 			.get("localhost:9999/magical-login?token=c03846a8dd974a208fe3ed9abce8aa18") //uuid

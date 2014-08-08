@@ -1,10 +1,10 @@
 var test = require('tap').test
 var Server = require('../server-src/index.js')
 var request = require('superagent')
-
+var level = require('level-mem')
 
 test('server serves index', function (t) { //serving files
-	var server = new Server()
+	var server = new Server(level('wat'))
 
 	server.listen(9999)
 
@@ -14,7 +14,8 @@ test('server serves index', function (t) { //serving files
 			.end(function (res) {
 				t.ok(res, "got a response")
 				t.type(res.text, "string", "there is an url in res")
-				t.ok(res.text.indexOf("you@youremail.com")>0, "got correct page back")
+
+				t.ok(res.text && res.text.indexOf("you@youremail.com")>0, "got correct page back")
 				server.close(t.end.bind(t))
 			})
 		})

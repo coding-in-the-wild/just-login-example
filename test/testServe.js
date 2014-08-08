@@ -1,9 +1,10 @@
 var test = require('tap').test
 var Server = require('../server-src/index.js')
 var request = require('superagent')
+var level = require('level-mem')
 
 test('server serves files', function (t) { //serving files
-	var server = new Server()
+	var server = new Server(level('wat'))
 
 	server.listen(9999)
 
