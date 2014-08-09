@@ -1,4 +1,6 @@
 var Level = require('level')
-var db = Level('./mydb')
-var server = require('./server-src/index.js')
-server(db).listen(9999)
+Level('./mydb', function (err, db) {
+	if (err) throw err
+	var server = require('./server-src/index.js')
+	server(db).listen(9999)
+})
