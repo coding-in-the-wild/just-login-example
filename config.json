@@ -1,0 +1,16 @@
+{
+  "url": {
+    "protocol":"http",
+    "hostname":"localhost",
+    "port":9999
+  },
+  "email": {
+    "host": "smtp.gmail.com",
+    "port": 465,
+    "secure": true,
+    "auth": {
+        "user": "justloginexample@gmail.com",
+        "pass": "[fake]"
+    }
+  }
+}

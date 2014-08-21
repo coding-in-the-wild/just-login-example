@@ -57,6 +57,11 @@ domready(function() {
 		})
 	})
 
+	apiEmitter.on('session', function(sessionInfo) {
+		console.log(sessionInfo.continued?'continued session':'new session')
+		console.log('session id:',sessionInfo.sessionId)
+	})
+
 	apiEmitter.on('authenticated', function(name) {
 		loggedInNow(name)
 	})

@@ -3,15 +3,8 @@ var Ractive = require('ractive')
 var password = require('../../#sensitive-info/just-login-email-opts.js')
 var formatUrl = require('url').format
 
-var hostOpts = {
-	host: 'smtp.gmail.com',
-	port: 465,
-	secure: true,
-	auth: {
-		user: 'justloginexample@gmail.com',
-		pass: password
-	}
-}
+var hostOpts = require('../config.json').email
+hostOpts.auth.pass = password
 
 var emailTemplate = require('fs').readFileSync('./emailTemplate.html', 'utf8')
 var parsedTemplate = Ractive.parse(emailTemplate)
