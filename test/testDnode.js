@@ -3,6 +3,7 @@ var Server = require('../server-src/index.js')
 // var http = require('http')
 // var shoe = require('shoe')
 var dnode = require('dnode')
+var level = require('level-mem')
 
 test('this aint a test', function (t) {
 	t.ok(true, "hi")
@@ -12,7 +13,8 @@ test('this aint a test', function (t) {
 test = function() {} //horrible lol haha
 
 test('server has dnode', function (t) { //dnode running and exposing api
-	var server = new Server()
+	var db = level('wat')
+	var server = new Server(db)
 	server.listen(9999, function() {
 		console.log("Listen callback called")
 		//var stream = shoe("/dnode")
