@@ -8,7 +8,7 @@ var shoe = require('shoe')
 var JustLoginServerApi = require('just-login-server-api')
 var JustLoginCore = require('just-login-core')
 //Database
-var sublevel = require('sublevel')
+var sublevel = require('level-sublevel')
 var ms = require('ms')
 //Other
 var IncrementCountApi = require('./incrementCountApi.js')
