@@ -27,3 +27,4 @@
 	cd C:\Github\just-login-example
 	git.exe pull -v --progress "origin"
 )
+PAUSE
