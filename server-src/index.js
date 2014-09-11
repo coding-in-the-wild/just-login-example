@@ -30,6 +30,12 @@ module.exports = function createServer(db, urlObject) {
 	var justLoginServerApi = JustLoginServerApi(justLoginCore)
 	var incrementCountApi = IncrementCountApi(justLoginCore, clickCountingDb) //Is 'clickCountingDb' supposed to be passed in?
 
+	var exposedApi = Object.create(justLoginServerApi)
+	exposedApi.beginAuthentication = function beginAuthentication(emailAddress, cb) {
+		debounce(emailAddress)
+		justLoginServerApi.beginAuthentication(emailAddress, cb)
+	}
+
 	urlObject = urlObject || {
 		protocol: 'http',
 		hostname: 'localhost.com',
@@ -37,7 +43,7 @@ module.exports = function createServer(db, urlObject) {
 		pathname: TOKEN_ENDPOINT
 	}
 
-	sendEmailOnAuth(justLoginCore, urlObject, function(err, info) {
+	sendEmailOnAuth(justLoginCore, urlObject, function (err, info) {
 		if (err) {
 			console.log('Error sending the email.', err || err.message)
 		}
