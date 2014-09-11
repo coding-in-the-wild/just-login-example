@@ -6,6 +6,7 @@ var domready = require('domready')
 var Shoe = require('shoe')
 var Dnode = require('dnode')
 var Debouncer = require('debouncer')
+var ms = require('ms')
 
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var CUSTOM_ENDPOINT = "/dnode-custom"
@@ -16,10 +17,6 @@ domready(function() {
 	var authenticatedStuffView = null
 	var checkAuthenticationStatusAndIncrementCounter = null //from dnode on
 	var loggedInNow = null
-
-	var debouncer = new Debouncer
-
-	5s 30s 5min 10min 30min hr
 
 	var apiEmitter = client(DNODE_ENDPOINT, function(err, api, sessionId) {
 		loggedInNow = function loggedInNow(name) {
@@ -55,8 +52,10 @@ domready(function() {
 
 		loginView.on('login', function (emailAddress) {
 			api.beginAuthentication(emailAddress, function (err, obj) {
-				//if error, print error to screen.
-				//Possible cause of error is not waiting enough between beginAuth calls
+				if (err && err.debounce && obj && obj.remaining) {
+					alert("U no can logz in now. U haz 2 waitz "+ms(obj.remaining, {long: true})+" secundz. "+err.message)
+				}
+				//Possible cause of error is not waiting enough between beginAuth calls (keys are being used)
 			})
 		})
 

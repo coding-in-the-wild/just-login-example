@@ -12,6 +12,8 @@ var sublevel = require('level-sublevel')
 var ms = require('ms')
 //Other
 var IncrementCountApi = require('./incrementCountApi.js')
+var Debouncer = require('debouncer')
+var ASQ = require('asynquence')
 var send = require('send')
 //Constants
 var SEND_DIR = "./static/"
@@ -23,18 +25,53 @@ module.exports = function createServer(db, urlObject) {
 	if (!db) {
 		throw new Error('Must provide a leveldb')
 	}
+
 	var sendOptions = { root: SEND_DIR }
 	db = sublevel(db)
 	var clickCountingDb = db.sublevel('click-counting')
-	var justLoginCore = JustLoginCore(db)
+	var debouncingDb = db.sublevel('debouncing')
+	var originalJustLoginCore = JustLoginCore(db)
+	var justLoginCore = Object.create(originalJustLoginCore)
+
+	var debounce = new Debouncer(debouncingDb, { //Untested :)
+		delayTimeMs: function (n) {
+			var delayTimes = ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr']
+			var delayTimeIndex = (n >= delayTimes.length) ? delayTimes.length-1 : n //if index is out of array, use last array element
+			return ms(delayTimes[delayTimeIndex])
+		}
+	})
+
+	justLoginCore.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
+		ASQ().gate( //parallel
+			function (done) {
+				debounce(emailAddress, function (err, allowed, remaining) {
+					done(err || {allowed: allowed, remaining: remaining})
+				})
+			}, function (done) {
+				debounce(sessionId, function (err, allowed, remaining) {
+					done(err || {allowed: allowed, remaining: remaining})
+				})
+			}
+		).val(function (debounceEmail, debounceSession) {
+			if (debounceEmail instanceof Error) { //Error in email debounce
+				cb(debounceEmail)
+			} else if (debounceSession instanceof Error) { //Error in session debounce
+				cb(debounceSession)
+			} else if (debounceEmail.allowed && debounceSession.allowed) { //This is what we want
+				originalJustLoginCore.beginAuthentication(sessionId, emailAddress, cb)
+			} else  { //Email and/or session debounce failed
+				var debounceError = new Error('Email and/or session debounce failure')
+				debounceError.debounce = true
+				cb(debounceError, {
+					allowed: false,
+					remaining: Math.max(debounceEmail.remaining, debounceSession.remaining)
+				})
+			}
+		})
+	}
+
 	var justLoginServerApi = JustLoginServerApi(justLoginCore)
 	var incrementCountApi = IncrementCountApi(justLoginCore, clickCountingDb) //Is 'clickCountingDb' supposed to be passed in?
-
-	var exposedApi = Object.create(justLoginServerApi)
-	exposedApi.beginAuthentication = function beginAuthentication(emailAddress, cb) {
-		debounce(emailAddress)
-		justLoginServerApi.beginAuthentication(emailAddress, cb)
-	}
 
 	urlObject = urlObject || {
 		protocol: 'http',
@@ -45,7 +82,7 @@ module.exports = function createServer(db, urlObject) {
 
 	sendEmailOnAuth(justLoginCore, urlObject, function (err, info) {
 		if (err) {
-			console.log('Error sending the email.', err || err.message)
+			console.log('Error sending the email', err || err.message)
 		}
 	})
 
@@ -59,7 +96,7 @@ module.exports = function createServer(db, urlObject) {
 		}
 
 		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
-			console.log("I am suprised that this is showing.")
+			console.log("I am suprised that this is showing")
 			//if dnode data transfer, do nothing
 			//I probably misunderstand what's happening, 'cuz this block *never* runs...
 		} else if (pathname === TOKEN_ENDPOINT) {
