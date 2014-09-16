@@ -6,18 +6,19 @@ var level = require('level-mem')
 test('server serves files', function (t) { //serving files
 	var server = new Server(level('wat'))
 
-	server.listen(9999)
-
-	server.on('listening', function() {
+	server.listen(9999, function() {
 		request
 			.get("localhost:9999/test.txt")
 			.end(function (res) {
 				t.ok(res, "got a response")
 				t.type(res.text, "string", "there is text in res")
 				t.equal(res.text, "it works", "it works")
-				server.close(t.end.bind(t))
-			})
-		})
+				setTimeout(function () {
+					server.close(t.end.bind(t))
+				}, 500) //allow time for errors to be thrown
+			}
+		)
+	})
 
 	server.on('error', function (err) {
 		t.fail("ERROR: "+err.message)

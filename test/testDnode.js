@@ -1,7 +1,5 @@
 var test = require('tap').test
 var Server = require('../server-src/index.js')
-// var http = require('http')
-// var shoe = require('shoe')
 var dnode = require('dnode')
 var level = require('level-mem')
 
@@ -29,8 +27,6 @@ test('server has dnode', function (t) { //dnode running and exposing api
 
 			server.close(t.end.bind(t))
 		})
-		/*var c = require('net').connect(5004);
-		c.pipe(d).pipe(c);*/
 		console.log("End of that callback")
 	}).on('error', function (err) {
 		t.notOk(true, "ERROR: "+err.message)
