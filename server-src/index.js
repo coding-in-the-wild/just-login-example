@@ -15,7 +15,9 @@ var IncrementCountApi = require('./incrementCountApi.js')
 var Debouncer = require('debouncer')
 var ASQ = require('asynquence')
 var send = require('send')
+var xtend = require('xtend')
 //Constants
+var DEFAULT_URL_OBJECT = require('../config.json').url
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var CUSTOM_ENDPOINT = "/dnode-custom"
@@ -28,7 +30,6 @@ module.exports = function createServer(db, urlObject) {
 
 	var sendOptions = { root: SEND_DIR }
 	db = sublevel(db)
-	var clickCountingDb = db.sublevel('click-counting')
 	var debouncingDb = db.sublevel('debouncing')
 	var originalJustLoginCore = JustLoginCore(db)
 	var justLoginCore = Object.create(originalJustLoginCore)
@@ -71,14 +72,12 @@ module.exports = function createServer(db, urlObject) {
 	}
 
 	var justLoginServerApi = JustLoginServerApi(justLoginCore)
-	var incrementCountApi = IncrementCountApi(justLoginCore, clickCountingDb) //Is 'clickCountingDb' supposed to be passed in?
+	var incrementCountApi = IncrementCountApi(justLoginCore, db) //this uses sublevel to partition
 
-	urlObject = urlObject || {
-		protocol: 'http',
-		hostname: 'localhost', //.com
-		port: 9999,
-		pathname: TOKEN_ENDPOINT
-	}
+	urlObject = urlObject || xtend(
+		DEFAULT_URL_OBJECT,
+		{ pathname: TOKEN_ENDPOINT }
+	)
 
 	sendEmailOnAuth(justLoginCore, urlObject, function (err, info) {
 		if (err) {

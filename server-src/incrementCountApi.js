@@ -21,18 +21,18 @@ function incrementCount(db, key, cb) {
 }
 
 
-var incrementCounterIfAuthed = function(jlc, db, sessionId, cb) {
+var incrementCounterIfAuthed = function(jlc, clickCountDb, sessionCountDb, sessionId, cb) {
 	jlc.isAuthenticated(sessionId, function (err, name) {
 		if (err) {
 			cb(err)
 		} else if (!name) {
 			cb(new Error('Name is falsey: '+(typeof name)))
 		} else {
-			incrementCount(db, name, function (err, globalCount) {
+			incrementCount(clickCountDb, name, function (err, globalCount) {
 				if (err) {
 					cb(err)
 				} else {
-					incrementCount(db, sessionId, function (err, sessionCount) {
+					incrementCount(sessionCountDb, sessionId, function (err, sessionCount) {
 						if (err) {
 							cb(err)
 						} else {
@@ -49,7 +49,9 @@ var incrementCounterIfAuthed = function(jlc, db, sessionId, cb) {
 }
 
 module.exports = function (jlc, db) {
-	return {
-		incrementCounterIfAuthed: incrementCounterIfAuthed.bind(null, jlc, db) //takes a session id and a callback
+	var globalCountDb = db.sublevel('global-click-counting') //hopefully sublevel has already been run on this db :P
+	var sessionCountDb = db.sublevel('session-click-counting')
+	return { //incrementCounterIfAuthed() takes a sessionId and callback
+		incrementCounterIfAuthed: incrementCounterIfAuthed.bind(null, jlc, globalCountDb, sessionCountDb)
 	}
 }
