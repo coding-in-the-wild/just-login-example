@@ -75,7 +75,7 @@ module.exports = function createServer(db, urlObject) {
 
 	urlObject = urlObject || {
 		protocol: 'http',
-		hostname: 'localhost.com',
+		hostname: 'localhost', //.com
 		port: 9999,
 		pathname: TOKEN_ENDPOINT
 	}
