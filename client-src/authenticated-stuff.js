@@ -4,7 +4,8 @@ var EventEmitter = require('events').EventEmitter
 module.exports = function(checkAuthentication) {
 	var emitter = new EventEmitter()
 	var state = {
-		numberOfTimes: 0,
+		globalNumberOfTimes: 0,
+		sessionNumberOfTimes: 0,
 		loggedIn: true
 	}
 
@@ -23,8 +24,9 @@ module.exports = function(checkAuthentication) {
 		checkAuthentication: checkAuthentication
 	})
 
-	emitter.on('countUpdated', function(newCount) {
-		state.numberOfTimes = newCount
+	emitter.on('countUpdated', function (newCounts) {
+		state.globalNumberOfTimes = newCounts.globalCount
+		state.sessionNumberOfTimes = newCounts.sessionCount
 	})
 
 	emitter.on('notAuthenticated', function() {

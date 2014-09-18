@@ -1,6 +1,6 @@
 var client = require('just-login-client')
 var LoginView = require('./login-view')
-var LoginController = require('./login-controller')
+//var LoginController = require('./login-controller')
 var AuthenticatedStuffView = require('./authenticated-stuff')
 var domready = require('domready')
 var Shoe = require('shoe')
@@ -13,9 +13,9 @@ var CUSTOM_ENDPOINT = "/dnode-custom"
 
 domready(function() {
 	var loginView = LoginView()
-	var loginController = LoginController()
+	//var loginController = LoginController()
 	var authenticatedStuffView = null
-	var checkAuthenticationStatusAndIncrementCounter = null //from dnode on
+	var incrementCounterIfAuthed = null //from dnode on
 	var loggedInNow = null
 
 	var apiEmitter = client(DNODE_ENDPOINT, function(err, api, sessionId) {
@@ -25,13 +25,13 @@ domready(function() {
 			if (!authenticatedStuffView) {
 				authenticatedStuffView = AuthenticatedStuffView()
 				authenticatedStuffView.on('check', function() {
-					if (checkAuthenticationStatusAndIncrementCounter) {
-						checkAuthenticationStatusAndIncrementCounter(sessionId, function(err, count) {
-							if (err || typeof count !== 'number') {
+					if (incrementCounterIfAuthed) {
+						incrementCounterIfAuthed(sessionId, function(err, counts) {
+							if (err || typeof counts !== 'object') {
 								authenticatedStuffView.emit('notAuthenticated')
 								loginView.emit('notAuthenticated')
 							} else {
-								authenticatedStuffView.emit('countUpdated', count)
+								authenticatedStuffView.emit('countUpdated', counts)
 							}
 						})
 					} else {
@@ -53,31 +53,31 @@ domready(function() {
 		loginView.on('login', function (emailAddress) {
 			api.beginAuthentication(emailAddress, function (err, obj) {
 				if (err && err.debounce && obj && obj.remaining) {
-					alert("U no can logz in now. U haz 2 waitz "+ms(obj.remaining, {long: true})+" secundz. "+err.message)
+					alert("Sorry, you must wait "+ms(obj.remaining, {long: true})+'.'+err.message)
 				}
 				//Possible cause of error is not waiting enough between beginAuth calls (keys are being used)
 			})
 		})
 
-		loginView.on('logout', function() {
-			api.unauthenticate(function(err) {})
+		loginView.on('logout', function () {
+			api.unauthenticate(function (err) {})
 		})
 	})
 
-	apiEmitter.on('session', function(sessionInfo) {
+	apiEmitter.on('session', function (sessionInfo) {
 		console.log(sessionInfo.continued?'continued session':'new session')
 		console.log('session id:',sessionInfo.sessionId)
 	})
 
-	apiEmitter.on('authenticated', function(name) {
+	apiEmitter.on('authenticated', function (name) {
 		loggedInNow(name)
 	})
 
 
-	var stream = Shoe(CUSTOM_ENDPOINT) //change 'justlogin' to 'custom'
+	var stream = Shoe(CUSTOM_ENDPOINT)
 	var d = Dnode()
 	d.on('remote', function (api) {
-		checkAuthenticationStatusAndIncrementCounter = api.checkAuthenticationStatusAndIncrementCounter
+		incrementCounterIfAuthed = api.incrementCounterIfAuthed
 	})
 	d.pipe(stream).pipe(d);
 })
