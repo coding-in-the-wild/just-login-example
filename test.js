@@ -1,5 +1,5 @@
 var test = require('tap').test
-var Server = require('../server-src/index.js')
+var Server = require('./server-src/index.js')
 var level = require('level-mem')
 var request = require('superagent') //used in 3
 var dnode = require('dnode') //used in one test

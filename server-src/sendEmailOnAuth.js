@@ -3,17 +3,14 @@ var Ractive = require('ractive')
 var password = require('../../#sensitive-info/just-login-email-opts.js')
 var formatUrl = require('url').format
 var fs = require('fs')
+var path = require('path')
 
 var hostOpts = require('../config.json').email
 hostOpts.auth.pass = password
 
-var emailTemplate = ''
-try {
-	emailTemplate = fs.readFileSync('./emailTemplate.html', 'utf8')
-} catch (err) {
-	emailTemplate = fs.readFileSync('../emailTemplate.html', 'utf8') //`npm test` throws wacky error w/o this
-}
-var parsedTemplate = Ractive.parse(emailTemplate)
+var parsedTemplate = Ractive.parse( // './emailTemplate.html' works but is confusing, because it is in the folder above
+	fs.readFileSync(path.resolve(__dirname, '../emailTemplate.html'), 'utf8')
+)
 
 module.exports = function(core, urlObject, cb) {
 	var mailOpts = {
