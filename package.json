@@ -39,7 +39,8 @@
     "shoe": "0.0.15",
     "xtend": "^3.0.0",
     "level-sublevel": "^5.0.0",
-    "debouncer": "0.0.3"
+    "debouncer": "0.0.3",
+    "asynquence": "^0.5.4-a"
   },
   "bugs": {
     "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
