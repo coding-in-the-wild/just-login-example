@@ -22,7 +22,8 @@
   "scripts": {
     "test": "node test.js",
     "prestart": "browserify client-src/index.js -d -o static/build.js",
-    "watch": "watchify client-src/index.js -d -o static/build.js"
+    "watch": "watchify client-src/index.js -d -o static/build.js",
+    "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
   },
   "dependencies": {
     "dnode": "^1.2.0",
@@ -39,7 +40,8 @@
     "shoe": "0.0.15",
     "xtend": "^3.0.0",
     "level-sublevel": "^5.0.0",
-    "debouncer": "0.0.3"
+    "debouncer": "0.0.3",
+    "ploy": "~1.9.0"
   },
   "bugs": {
     "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
