@@ -1,8 +1,7 @@
 {
   "url": {
     "protocol":"http",
-    "hostname":"localhost",
-    "port":9999
+    "hostname":"localhost"
   },
   "email": {
     "host": "smtp.gmail.com",
