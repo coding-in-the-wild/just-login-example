@@ -52,6 +52,9 @@ domready(function() {
 
 		loginView.on('login', function (emailAddress) {
 			api.beginAuthentication(emailAddress, function (err, obj) {
+				if (err) {
+					console.log(err, obj)
+				}
 				if (err && err.debounce && obj && obj.remaining) {
 					alert("Sorry, you must wait "+ms(obj.remaining, {long: true})+'.'+err.message)
 				}

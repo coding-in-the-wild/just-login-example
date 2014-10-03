@@ -45,19 +45,29 @@ module.exports = function createServer(db, urlObject) {
 	justLoginCore.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
 		ASQ().gate( //parallel
 			function (done) {
-				debounce(emailAddress, done.errfcb)
+				debounce(emailAddress, function(err, allowed, remaining) {
+					done.errfcb(err, {
+						allowed: allowed,
+						remaining: remaining
+					})
+				})
 			}, function (done) {
-				debounce(sessionId, done.errfcb)
+				debounce(sessionId, function(err, allowed, remaining) {
+					done.errfcb(err, {
+						allowed: allowed,
+						remaining: remaining
+					})
+				})
 			}
-		).val(function (emailAllowed, emailRemaining, sessionAllowed, sessionRemaining) {
-			if (emailAllowed && sessionAllowed) { //This is what we want
+		).val(function (email, session) {
+			if (email.allowed && session.allowed) { //This is what we want
 				originalJustLoginCore.beginAuthentication(sessionId, emailAddress, cb)
 			} else  { //Email and/or session debounce failed
 				var debounceError = new Error('Email and/or session debounce failure')
 				debounceError.debounce = true
 				cb(debounceError, {
 					allowed: false,
-					remaining: Math.max(emailRemaining, sessionRemaining)
+					remaining: Math.max(email.remaining, session.remaining) || email.remaining || session.remaining
 				})
 			}
 		}).onerror(cb)
