@@ -31,18 +31,17 @@ module.exports = function createServer(db, urlObject) {
 	var sendOptions = { root: SEND_DIR }
 	db = sublevel(db)
 	var debouncingDb = db.sublevel('debouncing')
-	var originalJustLoginCore = JustLoginCore(db)
-	var justLoginCore = Object.create(originalJustLoginCore)
+	var originalCore = JustLoginCore(db)
+	var core = Object.create(originalCore)
 
 	var debounce = new Debouncer(debouncingDb, { //Untested :)
-		delayTimeMs: function (n) {
-			var delayTimes = ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr']
-			var delayTimeIndex = (n >= delayTimes.length) ? delayTimes.length-1 : n //if index is out of array, use last array element
-			return ms(delayTimes[delayTimeIndex])
+			delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
+				return ms(str)
+			})
 		}
 	})
 
-	justLoginCore.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
+	core.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
 		ASQ().gate( //parallel
 			function (done) {
 				debounce(emailAddress, function(err, allowed, remaining) {
@@ -61,7 +60,7 @@ module.exports = function createServer(db, urlObject) {
 			}
 		).val(function (email, session) {
 			if (email.allowed && session.allowed) { //This is what we want
-				originalJustLoginCore.beginAuthentication(sessionId, emailAddress, cb)
+				originalCore.beginAuthentication(sessionId, emailAddress, cb)
 			} else  { //Email and/or session debounce failed
 				var debounceError = new Error('Email and/or session debounce failure')
 				debounceError.debounce = true
@@ -73,15 +72,15 @@ module.exports = function createServer(db, urlObject) {
 		}).onerror(cb)
 	}
 
-	var justLoginServerApi = JustLoginServerApi(justLoginCore)
-	var incrementCountApi = IncrementCountApi(justLoginCore, db) //this uses sublevel to partition
+	var serverApi = JustLoginServerApi(core)
+	var incrementCountApi = IncrementCountApi(core, db) //this uses sublevel to partition
 
 	urlObject = urlObject || xtend(
 		DEFAULT_URL_OBJECT,
 		{ pathname: TOKEN_ENDPOINT }
 	)
 
-	sendEmailOnAuth(justLoginCore, urlObject, function (err, info) {
+	sendEmailOnAuth(core, urlObject, function (err, info) {
 		if (err) {
 			console.log('Error sending the email', err || err.message)
 		}
@@ -102,7 +101,7 @@ module.exports = function createServer(db, urlObject) {
 			//I probably misunderstand what's happening, 'cuz this block *never* runs...
 		} else if (pathname === TOKEN_ENDPOINT) {
 			if (token && token.length > 0) { //If the token looks ok...
-				justLoginCore.authenticate(token, function (err, addr) { //...then try it
+				core.authenticate(token, function (err, addr) { //...then try it
 					var file = 'loginSuccess.html'
 
 					if (err) { //Bad token, and other errors
@@ -124,7 +123,7 @@ module.exports = function createServer(db, urlObject) {
 	})
 
 	shoe(function (stream) { //Basic authentication api
-		var d = dnode(justLoginServerApi)
+		var d = dnode(serverApi)
 		d.pipe(stream).pipe(d)
 	}).install(server, DNODE_ENDPOINT)
 
