@@ -23,7 +23,9 @@
     "test": "node test.js",
     "prestart": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
+    "preinstall": "(cp -r $PREV/node_modules .; exit 0)",
+    "srv-run": "ploy server ./data -p 80 -a auth.json",
+    "srv-up" "git push ploy master"
   },
   "dependencies": {
     "asynquence": "^0.5.4-a",
@@ -41,6 +43,7 @@
     "ractive": "^0.5.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
+    "weak": "^0.3.3",
     "xtend": "^3.0.0"
   },
   "bugs": {
