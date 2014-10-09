@@ -4,3 +4,6 @@
 node_modules/*
 mydb
 static/build.js
+log/*
+data/*
+repo/*

@@ -35,11 +35,11 @@ module.exports = function createServer(db, urlObject) {
 	var core = Object.create(originalCore)
 
 	var debounce = new Debouncer(debouncingDb, { //Untested :)
-			delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
-				return ms(str)
-			})
-		}
+		delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
+			return ms(str)
+		})
 	})
+	
 
 	core.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
 		ASQ().gate( //parallel
