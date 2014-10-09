@@ -1,6 +1,6 @@
 var JustLoginEmailer = require('just-login-emailer')
 var Ractive = require('ractive')
-var password = require('../../#sensitive-info/just-login-email-opts.js')
+var password = require('sensitive').justLoginPw
 var formatUrl = require('url').format
 var fs = require('fs')
 var path = require('path')
