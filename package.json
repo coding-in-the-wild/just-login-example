@@ -26,6 +26,8 @@
     "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
   },
   "dependencies": {
+    "asynquence": "^0.5.4-a",
+    "debouncer": "^1.0.0",
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
     "email-validator": "^1.0.1",
@@ -34,15 +36,12 @@
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
     "level": "^0.18.0",
+    "level-sublevel": "^5.0.0",
     "ms": "^0.6.2",
     "ractive": "^0.5.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
-    "xtend": "^3.0.0",
-    "level-sublevel": "^5.0.0",
-    "debouncer": "0.0.3",
-    "debouncer": "0.0.3",
-    "asynquence": "^0.5.4-a"
+    "xtend": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
