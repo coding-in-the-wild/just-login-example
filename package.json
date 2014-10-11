@@ -26,13 +26,13 @@
     "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
   },
   "dependencies": {
-    "asynquence": "^0.5.4-a",
     "debouncer": "^1.0.0",
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
     "email-validator": "^1.0.1",
     "just-login-client": "^1.0.0",
     "just-login-core": "^1.0.2",
+    "just-login-debouncer": "^1.0.0",
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
     "level": "^0.18.0",

@@ -7,13 +7,13 @@ var shoe = require('shoe')
 //Just Login
 var JustLoginServerApi = require('just-login-server-api')
 var JustLoginCore = require('just-login-core')
+var justLoginDebouncer = require('just-login-debouncer')
 //Database
 var sublevel = require('level-sublevel')
 var ms = require('ms')
 //Other
 var IncrementCountApi = require('./incrementCountApi.js')
 var Debouncer = require('debouncer')
-var ASQ = require('asynquence')
 var send = require('send')
 var xtend = require('xtend')
 //Constants
@@ -31,8 +31,7 @@ module.exports = function createServer(db, urlObject) {
 	var sendOptions = { root: SEND_DIR }
 	db = sublevel(db)
 	var debouncingDb = db.sublevel('debouncing')
-	var originalCore = JustLoginCore(db)
-	var core = Object.create(originalCore)
+	var core = JustLoginCore(db)
 
 	var debounce = new Debouncer(debouncingDb, { //Untested :)
 		delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
@@ -40,37 +39,7 @@ module.exports = function createServer(db, urlObject) {
 		})
 	})
 	
-
-	core.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
-		ASQ().gate( //parallel
-			function (done) {
-				debounce(emailAddress, function(err, allowed, remaining) {
-					done.errfcb(err, {
-						allowed: allowed,
-						remaining: remaining
-					})
-				})
-			}, function (done) {
-				debounce(sessionId, function(err, allowed, remaining) {
-					done.errfcb(err, {
-						allowed: allowed,
-						remaining: remaining
-					})
-				})
-			}
-		).val(function (email, session) {
-			if (email.allowed && session.allowed) { //This is what we want
-				originalCore.beginAuthentication(sessionId, emailAddress, cb)
-			} else  { //Email and/or session debounce failed
-				var debounceError = new Error('Email and/or session debounce failure')
-				debounceError.debounce = true
-				cb(debounceError, {
-					allowed: false,
-					remaining: Math.max(email.remaining, session.remaining) || email.remaining || session.remaining
-				})
-			}
-		}).onerror(cb)
-	}
+	justLoginDebouncer(core); //modifies 'core'
 
 	var serverApi = JustLoginServerApi(core)
 	var incrementCountApi = IncrementCountApi(core, db) //this uses sublevel to partition
