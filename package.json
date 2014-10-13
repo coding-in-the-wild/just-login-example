@@ -36,7 +36,6 @@
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
     "level": "^0.18.0",
-    "level-sublevel": "^5.0.0",
     "ms": "^0.6.2",
     "ractive": "^0.5.0",
     "send": "^0.5.0",
