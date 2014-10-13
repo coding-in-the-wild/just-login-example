@@ -13,7 +13,6 @@ var sublevel = require('level-sublevel')
 var ms = require('ms')
 //Other
 var IncrementCountApi = require('./incrementCountApi.js')
-var Debouncer = require('debouncer')
 var send = require('send')
 var xtend = require('xtend')
 //Constants
@@ -25,21 +24,15 @@ var TOKEN_ENDPOINT = "/magical-login"
 
 module.exports = function createServer(db, urlObject) {
 	if (!db) {
-		throw new Error('Must provide a leveldb')
+		throw new Error('Must provide a levelup database')
 	}
 
 	var sendOptions = { root: SEND_DIR }
 	db = sublevel(db)
 	var debouncingDb = db.sublevel('debouncing')
 	var core = JustLoginCore(db)
-
-	var debounce = new Debouncer(debouncingDb, { //Untested :)
-		delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
-			return ms(str)
-		})
-	})
 	
-	justLoginDebouncer(core); //modifies 'core'
+	justLoginDebouncer(core, debouncingDb) //modifies 'core'
 
 	var serverApi = JustLoginServerApi(core)
 	var incrementCountApi = IncrementCountApi(core, db) //this uses sublevel to partition
