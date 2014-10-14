@@ -15,8 +15,9 @@ var ms = require('ms')
 var IncrementCountApi = require('./incrementCountApi.js')
 var send = require('send')
 var xtend = require('xtend')
+var config = require('confuse')().justLogin
 //Constants
-var DEFAULT_URL_OBJECT = require('../config.json').url
+var DEFAULT_URL_OBJECT = config.url
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var CUSTOM_ENDPOINT = "/dnode-custom"

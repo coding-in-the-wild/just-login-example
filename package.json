@@ -26,6 +26,7 @@
     "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
   },
   "dependencies": {
+    "confuse": "0.0.1",
     "debouncer": "^1.0.0",
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
