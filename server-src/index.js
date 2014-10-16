@@ -1,23 +1,20 @@
 //Server
 var url = require('url')
 var http = require('http')
-var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
+var send = require('send')
+var IncrementCountApi = require('./incrementCountApi.js')
+var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 //Just Login
 var JustLoginServerApi = require('just-login-server-api')
 var JustLoginCore = require('just-login-core')
 var justLoginDebouncer = require('just-login-debouncer')
-//Database
-var sublevel = require('level-sublevel')
-var ms = require('ms')
 //Other
-var IncrementCountApi = require('./incrementCountApi.js')
-var send = require('send')
+var spaces = require('level-spaces')
 var xtend = require('xtend')
-var config = require('confuse')().justLogin
 //Constants
-var DEFAULT_URL_OBJECT = config.url
+var DEFAULT_URL_OBJECT = require('confuse')().justLogin.url
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var CUSTOM_ENDPOINT = "/dnode-custom"
@@ -29,10 +26,9 @@ module.exports = function createServer(db, urlObject) {
 	}
 
 	var sendOptions = { root: SEND_DIR }
-	db = sublevel(db)
-	var debouncingDb = db.sublevel('debouncing')
 	var core = JustLoginCore(db)
 	
+	var debouncingDb = spaces(db, 'debouncing')
 	justLoginDebouncer(core, debouncingDb) //modifies 'core'
 
 	var serverApi = JustLoginServerApi(core)

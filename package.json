@@ -23,7 +23,7 @@
     "test": "node test.js",
     "prestart": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "preinstall": "(cp -r $PREV/node_modules .; exit 0)"
+    "pre_install": "(cp -r $PREV/node_modules .; exit 0)"
   },
   "dependencies": {
     "confuse": "0.0.1",
@@ -37,7 +37,7 @@
     "just-login-emailer": "^1.0.0",
     "just-login-server-api": "^1.0.0",
     "level": "^0.18.0",
-    "ms": "^0.6.2",
+    "level-spaces": "^1.1.1",
     "ractive": "^0.5.0",
     "send": "^0.5.0",
     "shoe": "0.0.15",
