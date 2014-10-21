@@ -7,7 +7,7 @@ just-login-example
 
 #Try It
 
-1. Go to the [Just Login Website](103.131.240.195)
+1. Go to the [Just Login Website](http://103.131.240.195)
 2. Type your email address into the text box; click `Login`.
 3. Go to your email, open the email from `justloginexample`, and click the link.
 4. Click `Click Meh` as many times as you want.
@@ -16,7 +16,7 @@ just-login-example
 #Use It
 
 1. Clone this repository.
-2. Install [node](nodejs.org/download). (Includes [npm](nodejs.org/download).)
+2. Install [node](http://nodejs.org/download). (Includes [npm](http://nodejs.org/download).)
 3. Open a command prompt. (You might need to open it with administrative privileges; I'm not sure.)
 4. Run `npm install`.
 5. Edit the `config.json` file; add `hostname` & `pass`, and edit `user`:
