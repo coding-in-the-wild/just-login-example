@@ -22,14 +22,9 @@
   "scripts": {
     "test": "node test.js",
     "prestart": "browserify client-src/index.js -d -o static/build.js",
-<<<<<<< HEAD
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "preinstall": "(cp -r $PREV/node_modules .; exit 0)",
     "srv-run": "ploy server ./data -p 80 -a auth.json",
     "srv-up": "git push ploy master"
-=======
-    "watch": "watchify client-src/index.js -d -o static/build.js"
->>>>>>> 867acc9ad4bc85f751fd8c32f2cb899fbcb61f42
   },
   "dependencies": {
     "confuse": "0.0.1",
