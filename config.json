@@ -10,6 +10,12 @@
       "auth": {
         "user": "justloginexample@gmail.com"
       }
-    }
+    },
+    "endpoints": {
+      "dnode": "/dnode-justlogin",
+      "custom": "/dnode-custom",
+      "token": "/magical-login"
+    },
+    "staticDir": "./static/"
   }
 }

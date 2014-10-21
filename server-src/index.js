@@ -13,12 +13,13 @@ var justLoginDebouncer = require('just-login-debouncer')
 //Other
 var spaces = require('level-spaces')
 var xtend = require('xtend')
-//Constants
-var DEFAULT_URL_OBJECT = require('confuse')().justLogin.url
-var SEND_DIR = "./static/"
-var DNODE_ENDPOINT = "/dnode-justlogin"
-var CUSTOM_ENDPOINT = "/dnode-custom"
-var TOKEN_ENDPOINT = "/magical-login"
+//Config
+var config = require('confuse')().justLogin
+var DEFAULT_URL_OBJECT = config.url
+var SEND_DIR = config.staticDir
+var DNODE_ENDPOINT =  config.endpoints.dnode
+var CUSTOM_ENDPOINT = config.endpoints.custom
+var TOKEN_ENDPOINT =  config.endpoints.token
 
 module.exports = function createServer(db, urlObject) {
 	if (!db) {
