@@ -1,23 +1,20 @@
 //Server
 var url = require('url')
 var http = require('http')
-var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var dnode = require('dnode')
 var shoe = require('shoe')
+var send = require('send')
+var IncrementCountApi = require('./incrementCountApi.js')
+var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 //Just Login
 var JustLoginServerApi = require('just-login-server-api')
 var JustLoginCore = require('just-login-core')
-//Database
-var sublevel = require('level-sublevel')
-var ms = require('ms')
+var justLoginDebouncer = require('just-login-debouncer')
 //Other
-var IncrementCountApi = require('./incrementCountApi.js')
-var Debouncer = require('debouncer')
-var ASQ = require('asynquence')
-var send = require('send')
+var spaces = require('level-spaces')
 var xtend = require('xtend')
 //Constants
-var DEFAULT_URL_OBJECT = require('../config.json').url
+var DEFAULT_URL_OBJECT = require('confuse')().justLogin.url
 var SEND_DIR = "./static/"
 var DNODE_ENDPOINT = "/dnode-justlogin"
 var CUSTOM_ENDPOINT = "/dnode-custom"
@@ -25,52 +22,14 @@ var TOKEN_ENDPOINT = "/magical-login"
 
 module.exports = function createServer(db, urlObject) {
 	if (!db) {
-		throw new Error('Must provide a leveldb')
+		throw new Error('Must provide a levelup database')
 	}
 
 	var sendOptions = { root: SEND_DIR }
-	db = sublevel(db)
-	var debouncingDb = db.sublevel('debouncing')
-	var originalCore = JustLoginCore(db)
-	var core = Object.create(originalCore)
-
-	var debounce = new Debouncer(debouncingDb, { //Untested :)
-		delayTimeMs: ['0 s', '5 s', '30 s', '5 m', '10 m', '30 m', '1 hr'].map(function (str) {
-			return ms(str)
-		})
-	})
+	var core = JustLoginCore(db)
 	
-
-	core.beginAuthentication = function beginAuthentication(sessionId, emailAddress, cb) {
-		ASQ().gate( //parallel
-			function (done) {
-				debounce(emailAddress, function(err, allowed, remaining) {
-					done.errfcb(err, {
-						allowed: allowed,
-						remaining: remaining
-					})
-				})
-			}, function (done) {
-				debounce(sessionId, function(err, allowed, remaining) {
-					done.errfcb(err, {
-						allowed: allowed,
-						remaining: remaining
-					})
-				})
-			}
-		).val(function (email, session) {
-			if (email.allowed && session.allowed) { //This is what we want
-				originalCore.beginAuthentication(sessionId, emailAddress, cb)
-			} else  { //Email and/or session debounce failed
-				var debounceError = new Error('Email and/or session debounce failure')
-				debounceError.debounce = true
-				cb(debounceError, {
-					allowed: false,
-					remaining: Math.max(email.remaining, session.remaining) || email.remaining || session.remaining
-				})
-			}
-		}).onerror(cb)
-	}
+	var debouncingDb = spaces(db, 'debouncing')
+	justLoginDebouncer(core, debouncingDb) //modifies 'core'
 
 	var serverApi = JustLoginServerApi(core)
 	var incrementCountApi = IncrementCountApi(core, db) //this uses sublevel to partition

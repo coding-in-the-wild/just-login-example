@@ -1,15 +1,16 @@
 {
-  "url": {
-    "protocol":"http",
-    "hostname":"localhost"
-  },
-  "email": {
-    "host": "smtp.gmail.com",
-    "port": 465,
-    "secure": true,
-    "auth": {
-        "user": "justloginexample@gmail.com",
-        "pass": "[fake]"
+  "justLogin": {
+    "url": {
+      "protocol":"http",
+      "hostname":"localhost"
+    },
+    "email": {
+      "host": "smtp.gmail.com",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "justloginexample@gmail.com"
+      }
     }
   }
 }
