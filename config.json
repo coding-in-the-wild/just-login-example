@@ -1,8 +1,7 @@
 {
   "justLogin": {
     "url": {
-      "protocol":"http",
-      "hostname":"localhost"
+      "protocol":"http"
     },
     "email": {
       "host": "smtp.gmail.com",
