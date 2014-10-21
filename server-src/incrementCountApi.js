@@ -1,3 +1,12 @@
+var spaces = require('level-spaces')
+
+function cbIfErr(onErr, noErr) {
+	return function (err) {
+		if (err && !err.notFound) onErr(err)
+		else noErr.apply(null, [].slice.call(arguments)) //the error is applied
+	}
+}
+
 function incrementCount(db, key, cb) {
 	db.get(key, function(err, value) {
 		var count
@@ -22,35 +31,25 @@ function incrementCount(db, key, cb) {
 
 
 var incrementCounterIfAuthed = function(jlc, clickCountDb, sessionCountDb, sessionId, cb) {
-	jlc.isAuthenticated(sessionId, function (err, name) {
-		if (err) {
-			cb(err)
-		} else if (!name) {
+	jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
+		if (!name) { //not authenticated
 			cb(new Error('Name is falsey: '+(typeof name)))
-		} else {
-			incrementCount(clickCountDb, name, function (err, globalCount) {
-				if (err) {
-					cb(err)
-				} else {
-					incrementCount(sessionCountDb, sessionId, function (err, sessionCount) {
-						if (err) {
-							cb(err)
-						} else {
-							cb(null, {
-								globalCount: globalCount,
-								sessionCount: sessionCount
-							})
-						}
+		} else { //authenticated
+			incrementCount(clickCountDb, name, cbIfErr(cb, function (err, globalCount) {
+				incrementCount(sessionCountDb, sessionId, cbIfErr(cb, function (err, sessionCount) {
+					cb(null, {
+						globalCount: globalCount,
+						sessionCount: sessionCount
 					})
-				}
-			})
+				}))
+			}))
 		}
-	})
+	}))
 }
 
 module.exports = function (jlc, db) {
-	var globalCountDb = db.sublevel('global-click-counting') //hopefully sublevel has already been run on this db :P
-	var sessionCountDb = db.sublevel('session-click-counting')
+	var globalCountDb = spaces(db, 'global-click-counting')
+	var sessionCountDb = spaces(db, 'session-click-counting')
 	return { //incrementCounterIfAuthed() takes a sessionId and callback
 		incrementCounterIfAuthed: incrementCounterIfAuthed.bind(null, jlc, globalCountDb, sessionCountDb)
 	}
