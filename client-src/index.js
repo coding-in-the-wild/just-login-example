@@ -8,7 +8,7 @@ var Dnode = require('dnode')
 var ms = require('ms')
 var waterfall = require('run-waterfall')
 
-var config = require('confuse')().justLogin
+var config = require('../config.json').justLogin //cannot require('confuse')() in client, due to lack of fs
 var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 
@@ -32,7 +32,7 @@ domready(function() {
 			var authenticatedStuffView = AuthenticatedStuffView()
 			function loggedInNow(name) {
 				//authenticatedStuffView.emit('authenticate', name)
-				loginView.emit('authenticate', name)
+				//loginView.emit('authenticate', name)
 
 				authenticatedStuffView.on('check', function() {
 					incrementCounterIfAuthed(sessionId, function(err, counts) {
@@ -50,9 +50,8 @@ domready(function() {
 	}
 
 	function attachListeners(session, jlApi, loggedInNow, authenticatedStuffView) {
-		console.log('client-src/index.js: attachListeners()')
 		jlApi.isAuthenticated(function (err, name) {
-			if (name) {
+			if (!err && name) {
 				loggedInNow(name)
 			}
 		})
@@ -69,7 +68,9 @@ domready(function() {
 			})
 		})
 
-		loginView.on('logout', jlApi.unauthenticate.call(jlApi))
+		loginView.on('logout', function (name) {
+			jlApi.unauthenticate(name)
+		})
 
 		session.on('session', function (sessionInfo) {
 			console.log(sessionInfo.continued?'continued session':'new session')

@@ -6,7 +6,8 @@ module.exports = function(checkAuthentication) {
 	var state = {
 		globalNumberOfTimes: 0,
 		sessionNumberOfTimes: 0,
-		loggedIn: true
+		loggedIn: true,
+		apostrophe: "'"
 	}
 
 	var ractive = new Ractive({
