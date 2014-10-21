@@ -5,7 +5,6 @@ var AuthenticatedStuffView = require('./authenticated-stuff')
 var domready = require('domready')
 var Shoe = require('shoe')
 var Dnode = require('dnode')
-var Debouncer = require('debouncer')
 var ms = require('ms')
 
 var DNODE_ENDPOINT = "/dnode-justlogin"
