@@ -52,7 +52,7 @@
 		{{#if loggedIn}}
 			<div class="row">
 				<div class="col-sm-8">
-					<p class="text-success youre-totally-logged-in">You're totally logged in as {{authenticatedEmailAddress}}!</p>
+					<p class="text-success youre-totally-logged-in">You{{apostrophe}}re totally logged in as {{authenticatedEmailAddress}}!</p>
 				</div>
 				<div class="col-sm-4">
 					<button class="btn btn-default" on-click="logout">Logout</button>
@@ -80,12 +80,12 @@
 		{{#if loggedIn}}
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">OH SNAP you're totally authenticated!</h3>
+				<h3 class="panel-title">OH SNAP you{{apostrophe}}re totally authenticated!</h3>
 			</div>
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-6">
-						You can click this button to see if you're still authenticated.
+						You can click this button to see if you{{apostrophe}}re still authenticated.
 					</div>
 					<div class="col-sm-6">
 						<button type="button" class="btn btn-info pull-right" on-click="checkAuthentication">CLICK MEH</button>
@@ -100,10 +100,10 @@
 		{{else}}
 			<div class="panel panel-warning">
 				<div class="panel-heading">
-					<h3 class="panel-title">AAAAAAH you're not logged in any more</h3>
+					<h3 class="panel-title">AAAAAAH you{{apostrophe}}re not logged in any more</h3>
 				</div>
 				<div class="panel-body">
-					Don't worry, we'll keep your number safe.
+					Don{{apostrophe}}t worry, we{{apostrophe}}ll keep your number safe.
 				</div>
 			</div>
 		{{/if}}
