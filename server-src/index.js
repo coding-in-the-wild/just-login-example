@@ -55,11 +55,7 @@ module.exports = function createServer(db, urlObject) {
 			send(req, path, sendOptions).pipe(res)
 		}
 
-		if (pathname.slice(0, DNODE_ENDPOINT.length) == DNODE_ENDPOINT) {
-			console.log("I am suprised that this is showing")
-			//if dnode data transfer, do nothing
-			//I probably misunderstand what's happening, 'cuz this block *never* runs...
-		} else if (pathname === TOKEN_ENDPOINT) {
+		if (pathname === TOKEN_ENDPOINT) {
 			if (token && token.length > 0) { //If the token looks ok...
 				core.authenticate(token, function (err, addr) { //...then try it
 					var file = 'loginSuccess.html'
@@ -77,7 +73,7 @@ module.exports = function createServer(db, urlObject) {
 				res.statusCode = 400
 				sendIt('loginFailure.html')
 			}
-		} else {
+		} else if (pathname.slice(0, DNODE_ENDPOINT.length) != DNODE_ENDPOINT) { //not dnode
 			sendIt(pathname)
 		}
 	})

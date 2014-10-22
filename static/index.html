@@ -76,8 +76,35 @@
 		{{/if}}
 	</script>
 
+<!-- server-src/authenticated-stuff.js, views
+	loaded:    0,
+	badEmail:  1,
+	debounced: 2,
+	loggedIn:  3,
+	loggedOut: 4
+-->
 	<script id="authenticated-template" type="text/ractive">
-		{{#if loggedIn}}
+		{{#if view==1}}
+			<div class="panel panel-warning">
+			 	<div class="panel-heading">
+			 		<h3 class="panel-title">That{{apostrophe}}s not an email address!</h3>
+				</div>
+				<div class="panel-body">
+					Just sayin{{apostrophe}}, "{{badEmail}}" doesn{{apostrophe}}t look right. Please try again.
+				</div>
+			</div>
+		{{/if}}
+		{{#if view==2}}
+			<div class="panel panel-danger">
+			 	<div class="panel-heading">
+			 		<h3 class="panel-title">STAHP!!!</h3>
+				</div>
+				<div class="panel-body">
+					Let{{apostrophe}}s not be spamming the server; wait {{debounceRemaining}} before sending another email.
+				</div>
+			</div>
+		{{/if}}
+		{{#if view==3}}
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<h3 class="panel-title">OH SNAP you{{apostrophe}}re totally authenticated!</h3>
@@ -97,7 +124,8 @@
 				</div>
 			</div>
 		</div>
-		{{else}}
+		{{/if}}
+		{{#if view==4}}
 			<div class="panel panel-warning">
 				<div class="panel-heading">
 					<h3 class="panel-title">AAAAAAH you{{apostrophe}}re not logged in any more</h3>

@@ -1,6 +1,5 @@
 var justLoginClient = require('just-login-client')
 var LoginView = require('./login-view')
-//var LoginController = require('./login-controller')
 var AuthenticatedStuffView = require('./authenticated-stuff')
 var domready = require('domready')
 var Shoe = require('shoe')
@@ -8,15 +7,15 @@ var Dnode = require('dnode')
 var ms = require('ms')
 var waterfall = require('run-waterfall')
 
-var config = require('../config.json').justLogin //cannot require('confuse')() in client, due to lack of fs
+var config = require('../config.json').justLogin //cannot require('confuse')() in client, b/c no fs module
 var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 
 domready(function() {
 	var loginView = LoginView()
-	//var loginController = LoginController()
+	var authenticatedStuffView = AuthenticatedStuffView()
 
-	waterfall([ custom, client, attachListeners ])
+	waterfall([ custom, createSession, attachListeners ])
 
 	function custom(cb) {
 		var stream = Shoe(CUSTOM_ENDPOINT)
@@ -27,12 +26,14 @@ domready(function() {
 		d.pipe(stream).pipe(d)
 	}
 
-	function client(incrementCounterIfAuthed, cb) {
+	function createSession(incrementCounterIfAuthed, cb) {
 		var session = justLoginClient(DNODE_ENDPOINT, function(err, jlApi, sessionId) {
-			var authenticatedStuffView = AuthenticatedStuffView()
+			//authenticatedStuffView.emit('notAuthenticated', name)
+			//loginView.emit('notAuthenticated', name)
 			function loggedInNow(name) {
-				//authenticatedStuffView.emit('authenticate', name)
-				//loginView.emit('authenticate', name)
+				console.log('loggedInNow('+name+')')
+				authenticatedStuffView.emit('authenticated', name)
+				loginView.emit('authenticated', name)
 
 				authenticatedStuffView.on('check', function() {
 					incrementCounterIfAuthed(sessionId, function(err, counts) {
@@ -45,11 +46,11 @@ domready(function() {
 					})
 				})
 			}
-			cb(null, session, jlApi, loggedInNow, authenticatedStuffView)
+			cb(null, session, jlApi, loggedInNow)
 		})
 	}
 
-	function attachListeners(session, jlApi, loggedInNow, authenticatedStuffView) {
+	function attachListeners(session, jlApi, loggedInNow) {
 		jlApi.isAuthenticated(function (err, name) {
 			if (!err && name) {
 				loggedInNow(name)
@@ -62,10 +63,14 @@ domready(function() {
 					console.log(err, obj)
 				}
 				if (err && err.debounce && obj && obj.remaining) {
-					alert("Sorry, you must wait "+ms(obj.remaining, {long: true})+'.'+err.message)
+					authenticatedStuffView.emit('debounce', ms(obj.remaining, {long: true}))
 				}
 				//Possible cause of error is not waiting enough between beginAuth calls (keys are being used)
 			})
+		})
+
+		loginView.on('badEmail', function (emailAddress) {
+			authenticatedStuffView.emit('badEmail', emailAddress)
 		})
 
 		loginView.on('logout', function (name) {
@@ -77,6 +82,8 @@ domready(function() {
 			console.log('session id:',sessionInfo.sessionId)
 		})
 
-		session.on('authenticated', loggedInNow.bind(null))
+		session.on('authenticated', function (name) {
+			loggedInNow(name)
+		})
 	}
 })

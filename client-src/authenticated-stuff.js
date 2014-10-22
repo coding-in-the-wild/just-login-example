@@ -1,12 +1,22 @@
 var Ractive = require('ractive')
 var EventEmitter = require('events').EventEmitter
 
+var views = {
+	loaded:    0,
+	badEmail:  1,
+	debounced: 2,
+	loggedIn:  3,
+	loggedOut: 4
+}
+
 module.exports = function(checkAuthentication) {
 	var emitter = new EventEmitter()
 	var state = {
 		globalNumberOfTimes: 0,
 		sessionNumberOfTimes: 0,
-		loggedIn: true,
+		debounceRemaining: "",
+		badEmail: "",
+		view: views.loaded,
 		apostrophe: "'"
 	}
 
@@ -30,12 +40,22 @@ module.exports = function(checkAuthentication) {
 		state.sessionNumberOfTimes = newCounts.sessionCount
 	})
 
-	emitter.on('notAuthenticated', function() {
-		state.loggedIn = false
+	emitter.on('badEmail', function (email) {
+		state.badEmail = email
+		state.view = views.badEmail
 	})
 
-	emitter.on('authenticate', function() {
-		state.loggedIn = true
+	emitter.on('debounce', function (remaining) {
+		state.debounceRemaining = remaining
+		state.view = views.debounced
+	})
+
+	emitter.on('notAuthenticated', function() {
+		state.view = views.loggedOut
+	})
+
+	emitter.on('authenticated', function() {
+		state.view = views.loggedIn
 	})
 
 	return emitter
