@@ -28,10 +28,7 @@ domready(function() {
 
 	function createSession(incrementCounterIfAuthed, cb) {
 		var session = justLoginClient(DNODE_ENDPOINT, function(err, jlApi, sessionId) {
-			//authenticatedStuffView.emit('notAuthenticated', name)
-			//loginView.emit('notAuthenticated', name)
 			function loggedInNow(name) {
-				console.log('loggedInNow('+name+')')
 				authenticatedStuffView.emit('authenticated', name)
 				loginView.emit('authenticated', name)
 
@@ -58,14 +55,12 @@ domready(function() {
 		})
 
 		loginView.on('login', function (emailAddress) {
+			authenticatedStuffView.emit('loaded')
 			jlApi.beginAuthentication(emailAddress, function (err, obj) {
-				if (err) {
-					console.log(err, obj)
+				if (err && err.debounce) {
+					var message = (obj && obj.remaining) ? ms( obj.remaining, {long: true}) : "a little while"
+					authenticatedStuffView.emit('debounce', message)
 				}
-				if (err && err.debounce && obj && obj.remaining) {
-					authenticatedStuffView.emit('debounce', ms(obj.remaining, {long: true}))
-				}
-				//Possible cause of error is not waiting enough between beginAuth calls (keys are being used)
 			})
 		})
 
@@ -77,10 +72,7 @@ domready(function() {
 			jlApi.unauthenticate(name)
 		})
 
-		session.on('session', function (sessionInfo) {
-			console.log(sessionInfo.continued?'continued session':'new session')
-			console.log('session id:',sessionInfo.sessionId)
-		})
+		session.on('session', function (sessionInfo) {})
 
 		session.on('authenticated', function (name) {
 			loggedInNow(name)

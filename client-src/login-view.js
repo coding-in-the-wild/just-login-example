@@ -19,7 +19,6 @@ module.exports = function() {
 	})
 
 	function onLoginButton() {
-		console.log('loginButton')
 		var email = ractive.get('emailAddressInput')
 		if (emailIsValid(email)) {
 			emitter.emit('login', email)
@@ -30,7 +29,6 @@ module.exports = function() {
 	}
 
 	function onLogoutButton() {
-		console.log('logoutButton')
 		ractive.set('loggedIn', false)
 		emitter.emit('logout')
 	}
@@ -41,7 +39,6 @@ module.exports = function() {
 	})
 
 	emitter.on('authenticated', function(emailAddress) {
-		console.log('emitter.on(\'authenticated\')')
 		ractive.set({
 			'authenticatedEmailAddress': emailAddress,
 			'loggedIn': true,
