@@ -40,6 +40,10 @@ module.exports = function(checkAuthentication) {
 		state.sessionNumberOfTimes = newCounts.sessionCount
 	})
 
+	emitter.on('loaded', function () {
+		state.view = views.loaded
+	})
+
 	emitter.on('badEmail', function (email) {
 		state.badEmail = email
 		state.view = views.badEmail
