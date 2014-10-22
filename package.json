@@ -33,7 +33,7 @@
     "email-validator": "^1.0.1",
     "just-login-client": "^1.1.7",
     "just-login-core": "^1.2.2",
-    "just-login-debouncer": "^1.1.0",
+    "just-login-debouncer": "^1.3.0",
     "just-login-emailer": "^1.1.0",
     "just-login-server-api": "^1.0.3",
     "level": "^0.18.0",
