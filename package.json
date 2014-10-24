@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "node test.js",
-    "prestart": "browserify client-src/index.js -d -o static/build.js",
+    "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
     "deploy": "nohup ploy server ./data -p 80 -a ../auth.json",
     "redeploy": "git push ploy master",
