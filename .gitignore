@@ -7,3 +7,7 @@ static/build.js
 log/*
 data/*
 repo/*
+auth.json
+npm-debug.log
+nohup.out
+
