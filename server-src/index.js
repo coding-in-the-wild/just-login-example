@@ -3,7 +3,7 @@ var url = require('url')
 var http = require('http')
 var dnode = require('dnode')
 var shoe = require('shoe')
-var send = require('send')
+var Static = require('node-static')
 var IncrementCountApi = require('./incrementCountApi.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 //Just Login
@@ -16,7 +16,7 @@ var xtend = require('xtend')
 //Config
 var config = require('confuse')().justLogin
 var DEFAULT_URL_OBJECT = config.url
-var SEND_DIR = config.staticDir
+var STATIC_DIR = config.staticDir
 var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 var TOKEN_ENDPOINT =  config.endpoints.token
@@ -26,7 +26,7 @@ module.exports = function createServer(db, urlObject) {
 		throw new Error('Must provide a levelup database')
 	}
 
-	var sendOptions = { root: SEND_DIR }
+	var fileServer = new Static.Server(STATIC_DIR, {gzip: true})
 	var core = JustLoginCore(db)
 	
 	var debouncingDb = spaces(db, 'debouncing')
@@ -49,30 +49,33 @@ module.exports = function createServer(db, urlObject) {
 		var pathname = parsedUrl.pathname //get pathname from url
 		var token = parsedUrl.query.token //get token from url, e.g. {token: "19ed8309a9f02c84617"}
 
-		function sendIt(path) {
-			send(req, path, sendOptions).pipe(res)
+		function serve(path, statusCode) {
+			if (path.lastIndexOf('/') === path.length-1) {
+				path += "index.html"
+			}
+			fileServer.serveFile(path, statusCode || 200, {}, req, res).on('error', function (err) {
+				res.writeHead(err.status, err.headers)
+				res.end(err.message)
+			})
 		}
 
 		if (pathname === TOKEN_ENDPOINT) {
 			if (token && token.length > 0) { //If the token looks ok...
 				core.authenticate(token, function (err, addr) { //...then try it
-					var file = 'loginSuccess.html'
-
 					if (err) { //Bad token, and other errors
-						res.statusCode = 500
-						file = 'loginFailure.html'
+						serve('loginFailure.html', 500)
 					} else if (!addr) {
-						res.statusCode = 400
-						file = 'loginFailure.html'
+						serve('loginFailure.html', 400)
+					} else {
+						serve('loginSuccess.html')
 					}
-					sendIt(file)
+					
 				})
 			} else { //if the token doesn't even look like a token
-				res.statusCode = 400
-				sendIt('loginFailure.html')
+				serve('loginFailure.html', 400)
 			}
 		} else if (pathname.slice(0, DNODE_ENDPOINT.length) != DNODE_ENDPOINT) { //not dnode
-			sendIt(pathname)
+			serve(pathname)
 		}
 	})
 
