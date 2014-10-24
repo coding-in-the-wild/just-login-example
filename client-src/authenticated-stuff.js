@@ -51,7 +51,7 @@ module.exports = function(checkAuthentication) {
 			if (state.view === views.badEmail) {
 				state.view = views.empty
 			}
-		}, 2000)
+		}, 5000)
 	})
 
 	emitter.on('debounce', function (remaining) {
