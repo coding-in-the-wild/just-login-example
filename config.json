@@ -11,7 +11,7 @@
         "user": "justloginexample@gmail.com"
       }
     },
-    message: {
+    "message": {
       "from": "Just Login Example",
       "subject": "Login to this site!"
     },
