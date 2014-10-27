@@ -41,7 +41,10 @@ module.exports = function createServer(db, urlObject) {
 	)
 
 	sendEmailOnAuth(core, urlObject, function (err, info) {
-		err && console.error('Error sending the email', err.message)
+		if (err) {
+			console.log('Error sending the email:')
+			console.error(err)
+		}
 	})
 
 	var server = http.createServer(function requestListener(req, res) {

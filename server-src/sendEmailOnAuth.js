@@ -10,10 +10,7 @@ var parsedTemplate = Ractive.parse(
 )
 
 module.exports = function(core, urlObject, cb) {
-	var mailOpts = {
-		from: 'justloginexample@gmail.com',
-		subject: 'Login to this site!'
-	}
+	var mailOpts = config.message
 	var baseUrl = formatUrl(urlObject)
 
 	function htmlEmail(loginToken) {

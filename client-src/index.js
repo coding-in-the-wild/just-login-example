@@ -35,6 +35,7 @@ domready(function() {
 				authenticatedStuffView.on('check', function() {
 					incrementCounterIfAuthed(sessionId, function(err, counts) {
 						if (err || typeof counts !== 'object') {
+							console.log(err, typeof counts)
 							authenticatedStuffView.emit('notAuthenticated')
 							loginView.emit('notAuthenticated')
 						} else {
