@@ -2,7 +2,7 @@ var Ractive = require('ractive')
 var EventEmitter = require('events').EventEmitter
 
 var views = {
-	loaded:    0,
+	empty:    0,
 	badEmail:  1,
 	debounced: 2,
 	loggedIn:  3,
@@ -16,7 +16,7 @@ module.exports = function(checkAuthentication) {
 		sessionNumberOfTimes: 0,
 		debounceRemaining: "",
 		badEmail: "",
-		view: views.loaded,
+		view: views.empty,
 		apostrophe: "'"
 	}
 
@@ -41,12 +41,17 @@ module.exports = function(checkAuthentication) {
 	})
 
 	emitter.on('loaded', function () {
-		state.view = views.loaded
+		state.view = views.empty
 	})
 
 	emitter.on('badEmail', function (email) {
 		state.badEmail = email
 		state.view = views.badEmail
+		setTimeout(function () {
+			if (state.view === views.badEmail) {
+				state.view = views.empty
+			}
+		}, 5000)
 	})
 
 	emitter.on('debounce', function (remaining) {
