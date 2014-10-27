@@ -5,8 +5,8 @@ var fs = require('fs')
 var path = require('path')
 var config = require('confuse')().justLogin
 
-var parsedTemplate = Ractive.parse( // './emailTemplate.html' works but is confusing, because it is in the folder above
-	fs.readFileSync(path.resolve(__dirname, '../emailTemplate.html'), 'utf8')
+var parsedTemplate = Ractive.parse(
+	fs.readFileSync(path.resolve(__dirname, 'emailTemplate.html'), 'utf8')
 )
 
 module.exports = function(core, urlObject, cb) {
