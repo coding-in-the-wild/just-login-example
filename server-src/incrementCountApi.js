@@ -32,7 +32,6 @@ function incrementCount(db, key, cb) {
 
 var incrementCounterIfAuthed = function(jlc, globalCountDb, sessionCountDb, sessionId, cb) {
 	jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
-		console.log('server/increment; err:', err, 'name:', name)
 		if ((err && err.notFound) || !name) { //not authenticated
 			cb(new Error('Not Authenticated'))
 		} else { //authenticated

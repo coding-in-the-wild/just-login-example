@@ -9,7 +9,7 @@ var views = {
 	loggedOut: 4
 }
 
-module.exports = function(checkAuthentication) {
+module.exports = function() {
 	var emitter = new EventEmitter()
 	var state = {
 		globalNumberOfTimes: 0,
