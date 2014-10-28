@@ -1,6 +1,6 @@
 var justLoginClient = require('just-login-client')
-var LoginView = require('./login-view')
-var AuthenticatedStuffView = require('./authenticated-stuff')
+var EmailView = require('./email-view')
+var StatusView = require('./status-view')
 var domready = require('domready')
 var Shoe = require('shoe')
 var Dnode = require('dnode')
@@ -12,8 +12,8 @@ var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 
 domready(function() {
-	var loginView = LoginView()
-	var authenticatedStuffView = AuthenticatedStuffView()
+	var emailView = EmailView()
+	var statusView = StatusView()
 
 	waterfall([ custom, createSession, attachListeners ])
 
@@ -29,17 +29,16 @@ domready(function() {
 	function createSession(incrementCounterIfAuthed, cb) {
 		var session = justLoginClient(DNODE_ENDPOINT, function(err, jlApi, sessionId) {
 			function loggedInNow(name) {
-				authenticatedStuffView.emit('authenticated', name)
-				loginView.emit('authenticated', name)
+				statusView.emit('authenticated', name)
+				emailView.emit('authenticated', name)
 
-				authenticatedStuffView.on('check', function() {
+				statusView.on('check', function() {
 					incrementCounterIfAuthed(sessionId, function(err, counts) {
 						if (err || typeof counts !== 'object') {
-							console.log("cli-src/index", err, typeof counts, sessionId)
-							authenticatedStuffView.emit('notAuthenticated')
-							loginView.emit('notAuthenticated')
+							statusView.emit('notAuthenticated')
+							emailView.emit('notAuthenticated')
 						} else {
-							authenticatedStuffView.emit('countUpdated', counts)
+							statusView.emit('countUpdated', counts)
 						}
 					})
 				})
@@ -55,21 +54,21 @@ domready(function() {
 			}
 		})
 
-		loginView.on('login', function (emailAddress) {
-			authenticatedStuffView.emit('loaded')
+		emailView.on('login', function (emailAddress) {
+			statusView.emit('loaded')
 			jlApi.beginAuthentication(emailAddress, function (err, obj) {
 				if (err && err.debounce) {
 					var message = (obj && obj.remaining) ? ms( obj.remaining, {long: true}) : "a little while"
-					authenticatedStuffView.emit('debounce', message)
+					statusView.emit('debounce', message)
 				}
 			})
 		})
 
-		loginView.on('badEmail', function (emailAddress) {
-			authenticatedStuffView.emit('badEmail', emailAddress)
+		emailView.on('badEmail', function (emailAddress) {
+			statusView.emit('badEmail', emailAddress)
 		})
 
-		loginView.on('logout', function (name) {
+		emailView.on('logout', function (name) {
 			jlApi.unauthenticate(name)
 		})
 
