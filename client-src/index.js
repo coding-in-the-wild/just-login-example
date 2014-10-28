@@ -35,7 +35,7 @@ domready(function() {
 				authenticatedStuffView.on('check', function() {
 					incrementCounterIfAuthed(sessionId, function(err, counts) {
 						if (err || typeof counts !== 'object') {
-							console.log(err, typeof counts)
+							console.log("cli-src/index", err, typeof counts, sessionId)
 							authenticatedStuffView.emit('notAuthenticated')
 							loginView.emit('notAuthenticated')
 						} else {
@@ -49,7 +49,7 @@ domready(function() {
 	}
 
 	function attachListeners(session, jlApi, loggedInNow) {
-		jlApi.isAuthenticated(function (err, name) {
+		jlApi.isAuthenticated(function (err, name) { //checks if is authenticated when page opens
 			if (!err && name) {
 				loggedInNow(name)
 			}
