@@ -11,10 +11,7 @@
         "user": "justloginexample@gmail.com"
       }
     },
-    "message": {
-      "from": "Just Login Example",
-      "subject": "Login to this site!"
-    },
+    "emailSubject": "Login to this site!",
     "endpoints": {
       "dnode": "/dnode-justlogin",
       "custom": "/dnode-custom",
