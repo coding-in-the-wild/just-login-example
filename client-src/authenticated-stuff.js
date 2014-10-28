@@ -21,10 +21,10 @@ module.exports = function(checkAuthentication) {
 	}
 
 	var ractive = new Ractive({
-		el: 'the-place-where-the-other-stuff-goes',
-		template: '#authenticated-template',
-		data: state,
-		magic: true
+		el: 'status-view',
+		template: '#status-template',
+		data: state
+		//magic: true
 	})
 
 	function checkAuthentication() {
@@ -36,35 +36,41 @@ module.exports = function(checkAuthentication) {
 	})
 
 	emitter.on('countUpdated', function (newCounts) {
-		state.globalNumberOfTimes = newCounts.globalCount
-		state.sessionNumberOfTimes = newCounts.sessionCount
+		ractive.set({
+			globalNumberOfTimes: newCounts.globalCount,
+			sessionNumberOfTimes: newCounts.sessionCount
+		})
 	})
 
 	emitter.on('loaded', function () {
-		state.view = views.empty
+		ractive.set('view', views.empty)
 	})
 
 	emitter.on('badEmail', function (email) {
-		state.badEmail = email
-		state.view = views.badEmail
+		ractive.set({
+			badEmail: email,
+			view: views.badEmail
+		})
 		setTimeout(function () {
-			if (state.view === views.badEmail) {
-				state.view = views.empty
+			if (ractive.get('view') === views.badEmail) {
+				ractive.set('view', views.empty)
 			}
 		}, 5000)
 	})
 
 	emitter.on('debounce', function (remaining) {
-		state.debounceRemaining = remaining
-		state.view = views.debounced
+		ractive.set({
+			debounceRemaining: remaining,
+			view: views.debounced
+		})
 	})
 
 	emitter.on('notAuthenticated', function() {
-		state.view = views.loggedOut
+		ractive.set('view', views.loggedOut)
 	})
 
 	emitter.on('authenticated', function() {
-		state.view = views.loggedIn
+		ractive.set('view', views.loggedIn)
 	})
 
 	return emitter
