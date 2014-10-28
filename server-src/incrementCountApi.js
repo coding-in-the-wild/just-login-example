@@ -30,12 +30,13 @@ function incrementCount(db, key, cb) {
 }
 
 
-var incrementCounterIfAuthed = function(jlc, clickCountDb, sessionCountDb, sessionId, cb) {
+var incrementCounterIfAuthed = function(jlc, globalCountDb, sessionCountDb, sessionId, cb) {
 	jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
-		if (!name) { //not authenticated
-			cb(new Error('Name is falsey: '+(typeof name)))
+		console.log('server/increment; err:', err, 'name:', name)
+		if ((err && err.notFound) || !name) { //not authenticated
+			cb(new Error('Not Authenticated'))
 		} else { //authenticated
-			incrementCount(clickCountDb, name, cbIfErr(cb, function (err, globalCount) {
+			incrementCount(globalCountDb, name, cbIfErr(cb, function (err, globalCount) {
 				incrementCount(sessionCountDb, sessionId, cbIfErr(cb, function (err, sessionCount) {
 					cb(null, {
 						globalCount: globalCount,

@@ -33,7 +33,7 @@ module.exports = function createServer(db, urlObject) {
 	justLoginDebouncer(core, debouncingDb) //modifies 'core'
 
 	var serverApi = JustLoginServerApi(core)
-	var incrementCountApi = IncrementCountApi(core, db) //this uses sublevel to partition
+	var incrementCountApi = IncrementCountApi(core, db)
 
 	urlObject = urlObject || xtend(
 		DEFAULT_URL_OBJECT,
@@ -56,7 +56,8 @@ module.exports = function createServer(db, urlObject) {
 			if (path.lastIndexOf('/') === path.length-1) {
 				path += "index.html"
 			}
-			fileServer.serveFile(path, statusCode || 200, {}, req, res).on('error', function (err) {
+			fileServer.serveFile(path, statusCode || 200, {}, req, res)
+					.on('error', function (err) {
 				res.writeHead(err.status, err.headers)
 				res.end(err.message)
 			})
@@ -72,7 +73,6 @@ module.exports = function createServer(db, urlObject) {
 					} else {
 						serve('loginSuccess.html')
 					}
-					
 				})
 			} else { //if the token doesn't even look like a token
 				serve('loginFailure.html', 400)
