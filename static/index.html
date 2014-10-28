@@ -17,7 +17,7 @@
  	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
  		<div class="container">
  			<div class="navbar-header">
- 				<div class="navbar-brand">Just Login</div>
+ 				<div class="navbar-brand" href="#">Just Login</div>
  			</div>
  		</div>
  	</nav>
@@ -36,19 +36,17 @@
 		<div class="row">
 
 			<div class="col-sm-6">
-				<div id="the-well-with-the-buttons-and-stuff" class="well well-lg">
-
+				<div id="email-view" class="well well-lg">
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<div id="the-place-where-the-other-stuff-goes">
+				<div id="status-view">
 				</div>
-
 			</div>
 		</div>
 	</div>
 
-	<script id="login-template" type="text/ractive">
+	<script id="email-template" type="text/ractive">
 		{{#if loggedIn}}
 			<div class="row">
 				<div class="col-sm-8">
@@ -85,7 +83,7 @@
 	loggedIn:  3,
 	loggedOut: 4
 -->
-	<script id="authenticated-template" type="text/ractive">
+	<script id="status-template" type="text/ractive">
 		{{#if view==1}}
 			<div class="panel panel-warning">
 			 	<div class="panel-heading">

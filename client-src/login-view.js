@@ -6,8 +6,8 @@ module.exports = function() {
 	var emitter = new EventEmitter()
 
 	var ractive = new Ractive({
-		template: '#login-template',
-		el: 'the-well-with-the-buttons-and-stuff',
+		template: '#email-template',
+		el: 'email-view',
 		data: {
 			loggedIn: false,
 			loggingIn: false,
