@@ -40,12 +40,12 @@
     "level": "^0.18.0",
     "level-spaces": "^1.1.1",
     "ms": "^0.6.2",
+    "node-static": "^0.7.6",
     "ractive": "^0.5.0",
     "run-waterfall": "^1.0.0",
     "shoe": "0.0.15",
     "weak": "^0.3.3",
-    "xtend": "^3.0.0",
-    "node-static": "^0.7.6"
+    "xtend": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
