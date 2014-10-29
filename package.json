@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "./server.js",
   "author": "ArtskydJ <josephdykstra@gmail.com>",
-  "description": "Browser code for the just-login-core and just-login-emailer",
+  "description": "The example site of the just login suite",
   "keywords": [
     "just login"
   ],
