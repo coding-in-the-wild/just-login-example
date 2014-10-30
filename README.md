@@ -7,7 +7,7 @@ just-login-example
 
 #Try It
 
-1. Go to the [Just Login Website](http://103.131.240.195)
+1. Go to the [Just Login Website](http://justlogin.xyz)
 2. Type your email address into the text box; click `Login`.
 3. Go to your email, open the email from `justloginexample`, and click the link.
 4. Click `Click Meh` as many times as you want.
