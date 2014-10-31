@@ -15,14 +15,13 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 
 `J.L.` = `Just Login`
 
-[Example Server] ←→ [[Dnode][dnode]] ←→ [[J.L. Client][clnt]]
-       ↓
-[[J.L. Server API][sapi]]
-       ↓
-[[J.L. Core][core]] ←─┬── [[J.L. Debouncer][dbnc]]
-       ↓              └── [[J.L. Emailer][emlr]]
-[[LevelUP DB][level]]  
-
+`Example Server` ←→ [`Dnode`][dnode] ←→ [`J.L. Client`][clnt]  
+       ↓  
+[`J.L. Server API`][sapi]  
+       ↓  
+[`J.L. Core`][core] ←─┬── [`J.L. Debouncer`][dbnc]  
+       ↓              └── [`J.L. Emailer`][emlr]  
+[`LevelUP DB`][level]
 
 
 To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi]
