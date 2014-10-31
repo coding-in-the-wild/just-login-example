@@ -16,13 +16,13 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 `J.L.` = `Just Login`
 
 `Example Server` ◄─► [`Dnode`][dnode] ◄─► [`J.L. Client`][clnt]   
- ▼  
-┌[`J.L. Server API`][sapi]  
+▼  
+┌[`J.L. Server API`][sapi] (Wrappers)  
 ├[`J.L. Debouncer`][dbnc]  
 ├[`J.L. Emailer`][emlr]  
 ▼  
 [`J.L. Core`][core]  
- ▼  
+▼  
 [`LevelUP DB`][level]  
 
 
