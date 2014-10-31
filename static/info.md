@@ -11,7 +11,9 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 5. Users are dumb; they'll use `123456` or reuse a password.
 6. The tokens are basically impossible to guess, and expire shortly. (In this case, the token is an UUID and expires in just 5 minutes.)
 
-#Diagram
+#Overview of each just-login module
+
+
 
 `J.L.` = `Just Login`
 
@@ -26,9 +28,25 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 [`LevelUP DB`][level]  
 
 
-To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi]
+To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi].
 
-Maybe you want to text users thier token. (I suggest using a different token generator. ☺) Don't use the just-login-emailer.
+The core is an event emitter that has some functions as properties. The functions are for logging you in or out, and checking if you're logged in. (For more specific information, check [this][core] out.)
+
+The server api takes a core. It returns two functions, one to continue and existing session, and one to create a new one. After a session is established, it gives back function for logging you in or out, and checking if you're logged in. The difference from the core, is that a session is bound to each function given back. (For more specific information, check [this][sapi] out.)
+
+#Sending the Token
+If you plan to email the user, you might as well use the [Emailer][emlr].
+
+If you want to use something else, you'll have to write a bit of code. See the example below:
+
+```js
+//core is your just-login-core object
+core.on('authentication initiated', function (loginReq) {
+
+	//replace 'sendSMS' with whatever function you have for sending a message to the user.
+	sendSMS(loginReq.contactAddress, 'Here is your login code:\n' + loginReq.token)
+})
+```
 
 
 [core]: https://github.com/coding-in-the-wild/just-login-core
