@@ -29,7 +29,7 @@ test('server has dnode', function (t) { //dnode running and exposing api
 		t.notOk(true, "EXCEPTION: "+exception+" ON SOCKET "+socket+"(done)")
 	})
 })
-// */
+*/
 
 var test = require('tap').test
 
