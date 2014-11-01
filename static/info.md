@@ -33,11 +33,6 @@ J.L. = Just Login
     └─────────┘
 ```
 
-┼ ├ ┬ ┤ ┴ ┌ └ ┐ ┘ ─ │ ▼ ◄ ▲ ►
-
-
-
-
 To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi].
 
 The core is an event emitter that has some functions as properties. The functions are for logging you in or out, and checking if you're logged in. (For more specific information, check [this][core] out.)
