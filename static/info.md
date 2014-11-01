@@ -13,19 +13,29 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 
 #Overview of each just-login module
 
+J.L. = Just Login
+
+```
+┌─────────────────┐             ┌───────┐             ┌─────────────────┐
+│ Example  Server ├─────────────┤ Dnode ├─────────────┤ Example  Client │
+└────────┬────────┘             └───────┘             └────────┬────────┘
+┌────────┴────────┐                                     ┌──────┴──────┐
+│ J.L. Server API │                                     │ J.L. Client │
+└────────┬────────┘                                     └─────────────┘
+ ┌───────┴──────────────────────────┐
+ │         [Debounced Core]         │
+ │ ┌───────────┐ ┌────────────────┐ │ ┌──────────────┐
+ │ │ J.L. Core ├─┤ J.L. Debouncer │ ├─┤ J.L. Emailer │
+ │ └───────────┘ └────────────────┘ │ └──────────────┘
+ └───────┬──────────────────────────┘
+    ┌────┴────┐
+    │ LevelUP │
+    └─────────┘
+```
+
+┼ ├ ┬ ┤ ┴ ┌ └ ┐ ┘ ─ │ ▼ ◄ ▲ ►
 
 
-`J.L.` = `Just Login`
-
-`Example Server` ◄─► [`Dnode`][dnode] ◄─► [`J.L. Client`][clnt]   
-▼  
-┌[`J.L. Server API`][sapi] (Wrappers)  
-├[`J.L. Debouncer`][dbnc]  
-├[`J.L. Emailer`][emlr]  
-▼  
-[`J.L. Core`][core]  
-▼  
-[`LevelUP DB`][level]  
 
 
 To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi].
