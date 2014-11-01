@@ -33,7 +33,7 @@
     "domready": "^1.0.5",
     "email-validator": "^1.0.1",
     "just-login-client": "^1.2.2",
-    "just-login-core": "^1.2.3",
+    "just-login-core": "^1.2.5",
     "just-login-debouncer": "^1.3.0",
     "just-login-emailer": "^1.1.0",
     "just-login-server-api": "^1.0.3",

@@ -64,19 +64,15 @@ module.exports = function createServer(db, urlObject) {
 		}
 
 		if (pathname === TOKEN_ENDPOINT) {
-			if (token && token.length > 0) { //If the token looks ok...
-				core.authenticate(token, function (err, addr) { //...then try it
-					if (err) { //Bad token, and other errors
-						serve('loginFailure.html', 500)
-					} else if (!addr) {
-						serve('loginFailure.html', 400)
-					} else {
-						serve('loginSuccess.html')
-					}
-				})
-			} else { //if the token doesn't even look like a token
-				serve('loginFailure.html', 400)
-			}
+			core.authenticate(token, function (err, addr) { //...then try it
+				if (err) { //Bad token, and other errors
+					serve('loginFailure.html', 500)
+				} else if (!addr) {
+					serve('loginFailure.html', 400)
+				} else {
+					serve('loginSuccess.html')
+				}
+			})
 		} else if (pathname.slice(0, DNODE_ENDPOINT.length) != DNODE_ENDPOINT) { //not dnode
 			serve(pathname)
 		}
