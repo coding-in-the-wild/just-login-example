@@ -58,7 +58,7 @@ module.exports = function createServer(db, urlObject) {
 			}
 			fileServer.serveFile(path, statusCode || 200, {}, req, res)
 					.on('error', function (err) {
-				res.writeHead(err.status, err.headers)
+				res.writeHead(err.status || 400, err.headers)
 				res.end(err.message)
 			})
 		}
