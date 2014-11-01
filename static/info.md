@@ -72,6 +72,11 @@ var JlServerApi = require('just-login-server-api')
 var JlEmailer =   require('just-login-emailer')
 
 //Other
+var url = require('url')
+var http = require('http')
+var dnode = require('dnode')
+var shoe = require('shoe')
+var Static = require('node-static')
 var level = require('level')
 
 //Create a few databases
@@ -109,6 +114,9 @@ JlEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) {
 //Set up your server
 var DNODE_ENDPOINT =  "/dnode"
 var TOKEN_ENDPOINT =  "/login"
+var STATIC_DIR = "./static/"
+
+var fileServer = new Static.Server(STATIC_DIR, {gzip: true})
 
 var server = http.createServer(function requestListener(req, res) {
 	var parsedUrl = url.parse(req.url, true) //queryString enabled
@@ -124,15 +132,11 @@ var server = http.createServer(function requestListener(req, res) {
 	}
 
 	if (pathname === TOKEN_ENDPOINT) {
-		if (token && token.length > 0) {
-			core.authenticate(token, function (err, addr) { //...then try it
-				if (err)        serve('loginFailure.html', 500)
-				else if (!addr) serve('loginFailure.html', 400)
-				else            serve('loginSuccess.html')
-			})
-		} else {
-			serve('loginFailure.html', 400)
-		}
+		core.authenticate(token, function (err, addr) {
+			if (err)        serve('loginFailure.html', 500)
+			else if (!addr) serve('loginFailure.html', 400)
+			else            serve('loginSuccess.html')
+		})
 	} else if (pathname.slice(0, DNODE_ENDPOINT.length) != DNODE_ENDPOINT) { //not dnode
 		serve(pathname)
 	}
