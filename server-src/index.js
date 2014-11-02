@@ -56,10 +56,13 @@ module.exports = function createServer(db, urlObject) {
 			if (path.lastIndexOf('/') === path.length-1) {
 				path += "index.html"
 			}
-			fileServer.serveFile(path, statusCode || 200, {}, req, res)
-					.on('error', function (err) {
-				res.writeHead(err.status || 400, err.headers)
-				res.end(err.message)
+			fileServer.serveFile(path, statusCode || 200, {}, req, res).on('error', function (err) {
+				if (err && (err.status === 404)) {
+					fileServer.serveFile('/404.html', 404, {}, req, res);
+				} else {
+					res.writeHead((err && err.status) || 500, err.headers)
+					res.end(err.message)
+				}
 			})
 		}
 
