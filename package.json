@@ -23,6 +23,7 @@
     "test": "node test.js",
     "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
+    "info": "gfm2html info.md static/info.html",
     "deploy": "sudo nohup ploy server ./data -p 80 -a ../auth.json",
     "redeploy": "git push ploy master",
     "prestart": "browserify client-src/index.js | uglifyjs -m -o static/build.js"

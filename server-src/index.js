@@ -78,7 +78,7 @@ module.exports = function createServer(db, urlObject) {
 	})
 	route.get(DNODE_ENDPOINT, function () {})
 	route.get(CUSTOM_ENDPOINT, function () {})
-	route.get(serve.bind(null, null))
+	route.get(serve.bind(null, ''))
 
 	var server = http.createServer(route)
 
