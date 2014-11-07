@@ -37,11 +37,23 @@ To keep the server code clean, we will split it up into a few files.
 
 ###include the core in your server
 ```js
-var JustLoginCore = require('just-login-core')
 var level = require('level')
-
 var coreDb = level('./databases/core')
+
+var JustLoginCore = require('just-login-core')
 var core = JustLoginCore(coreDb)
+```
+
+```js
+core.authenticate(token, function (err, addr) {
+	if (err) { //Bad token, and other errors
+		serve('loginFailure.html', req, res, 500)
+	} else if (!addr) {
+		serve('loginFailure.html', req, res, 400)
+	} else {
+		serve('loginSuccess.html', req, res)
+	}
+})
 
 
 var JustLoginDebouncer = require('just-login-debouncer')
