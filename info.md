@@ -31,41 +31,22 @@ If you didn't mean to log in, ignore this email.
 - Todd has effectively authenticated himself via his email address.
 - No passwords, better security, easier to implement; what's not to like!?
 
-#Overview of each just-login module
-
-J.L. = Just Login
-
-###Diagram
-```
-┌─────────────────┐             ┌───────┐             ┌─────────────────┐
-│ Example  Server ├─────────────┤ Dnode ├─────────────┤ Example  Client │
-└────────┬────────┘             └───────┘             └────────┬────────┘
-┌────────┴────────┐                                     ┌──────┴──────┐
-│ J.L. Server API │                                     │ J.L. Client │
-└────────┬────────┘                                     └─────────────┘
- ┌───────┴──────────────────────────┐
- │         [Debounced Core]         │
- │ ┌───────────┐ ┌────────────────┐ │ ┌──────────────┐
- │ │ J.L. Core ├─┤ J.L. Debouncer │ ├─┤ J.L. Emailer │
- │ └───────────┘ └────────────────┘ │ └──────────────┘
- └───────┬──────────────────────────┘
-    ┌────┴────┐
-    │ LevelUP │
-    └─────────┘
-```
-
-
 ###Server Sample Code
 
 To keep the server code clean, we will split it up into a few files.
 
-###example-server.js
+###include the core in your server
 ```js
-//Just Login
-var JlCore =      require('just-login-core')
-var JlDebouncer = require('just-login-debouncer')
-var JlServerApi = require('just-login-server-api')
-var JlEmailerHelper = require('./example-emailer.js') //Next example file
+var JustLoginCore = require('just-login-core')
+var level = require('level')
+
+var coreDb = level('./databases/core')
+var core = JustLoginCore(coreDb)
+
+
+var JustLoginDebouncer = require('just-login-debouncer')
+var JustLoginServerApi = require('just-login-server-api')
+var JustLoginEmailerHelper = require('./example-emailer.js') //Next example file
 
 //Other
 var url = require('url')
@@ -73,19 +54,16 @@ var http = require('http')
 var dnode = require('dnode')
 var shoe = require('shoe')
 var Static = require('node-static')
-var level = require('level')
 
 var customApi = require('./yourCustomApi.js')
 
 //Create a few databases
-var coreDb = level('./databases/core')
 var debounceDb = level('./databases/debouncer')
 
 //Set up just-login
-var core = JlCore(coreDb)
 justLoginDebouncer(core) //Modifies the core
-JlEmailerHelper(core) //Watches for events on the core
-var serverApi = JlServerApi(core)
+JustLoginEmailerHelper(core) //Watches for events on the core
+var serverApi = JustLoginServerApi(core)
 
 //Set up your server
 var DNODE_ENDPOINT =  "/dnode"
@@ -142,9 +120,9 @@ server.listen(8080)
 ```
 
 
-###example-emailer.js
+###emailer
 ```js
-var JlEmailer = require('just-login-emailer')
+var JustLoginEmailer = require('just-login-emailer')
 
 function htmlEmail(token) {
 	return 'Click ' + ('here'.link('http://example.com/login?token=' + token)) + ' to login like a boss.'
@@ -164,7 +142,7 @@ var mailOptions = {
 	subject: 'Login Like A Boss'
 }
 
-module.exports = function JlEmailerHelper(core) {
+function JustLoginEmailerHelper(core) {
 	JlEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) {
 		if (err) console.error(err)
 	})
