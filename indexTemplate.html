@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A layout example that shows off a responsive product landing page.">
+
+	<title>Just Login</title>
+
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/darkly.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/markdown-style.css" />
+
+ </head>
+ <body>
+
+ 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+ 		<div class="container">
+ 			<div class="navbar-header">
+ 				<div class="navbar-brand" href="#">Just Login</div>
+ 			</div>
+ 		</div>
+ 	</nav>
+
+
+	<div class="container">
+		<div class="row">
+			<div class="jumbotron col-sm-offset-2 col-sm-8">
+				<h1>Just Login</h1>
+ 				<p>
+ 					A JavaScript library so that people can log in to your site with just their email address and you don't have to re-implement password storage.  YESSSSSS
+ 				</p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div id="email-view" class="well well-lg">
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div id="status-view">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script id="email-template" type="text/ractive">
+		{{#if loggedIn}}
+			<div class="row">
+				<div class="col-sm-8">
+					<p class="text-success youre-totally-logged-in">You{{apostrophe}}re totally logged in as {{authenticatedEmailAddress}}!</p>
+				</div>
+				<div class="col-sm-4">
+					<button class="btn btn-default" on-click="logout">Logout</button>
+				</div>
+			</div>
+		{{else}}
+			<div class="row">
+				<form action="#" onsubmit="return false">
+					<div class="col-sm-8">
+						<input type="text" class="form-control" placeholder="you@youremail.com" value="{{emailAddressInput}}" disabled="{{loggingIn}}" />
+					</div>
+					<div class="col-sm-4">
+						<button class="btn btn-primary" on-click="login" disabled="{{loggingIn}}">
+							{{#if loggingIn}}
+								Check your email...
+							{{else}}
+								Login
+							{{/if}}
+						</button>
+					</div>
+				</form>
+			</div>
+		{{/if}}
+	</script>
+
+<!-- server-src/authenticated-stuff.js, views
+	loaded:    0,
+	badEmail:  1,
+	debounced: 2,
+	loggedIn:  3,
+	loggedOut: 4
+-->
+	<script id="status-template" type="text/ractive">
+		{{#if view==1}}
+			<div class="panel panel-warning">
+			 	<div class="panel-heading">
+			 		<h3 class="panel-title">That{{apostrophe}}s not an email address!</h3>
+				</div>
+				<div class="panel-body">
+					Just sayin{{apostrophe}}, <span class="badge">{{badEmail}}</span> doesn{{apostrophe}}t look right. Please try again.
+				</div>
+			</div>
+		{{/if}}
+		{{#if view==2}}
+			<div class="panel panel-danger">
+			 	<div class="panel-heading">
+			 		<h3 class="panel-title">STAHP!!!</h3>
+				</div>
+				<div class="panel-body">
+					Let{{apostrophe}}s not be spamming the server; wait {{debounceRemaining}} before sending another email.
+				</div>
+			</div>
+		{{/if}}
+		{{#if view==3}}
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">OH SNAP you{{apostrophe}}re totally authenticated!</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6">
+						You can click this button to see if you{{apostrophe}}re still authenticated.
+					</div>
+					<div class="col-sm-6">
+						<button type="button" class="btn btn-info pull-right" on-click="checkAuthentication">CLICK MEH</button>
+					</div>
+					<div class="col-sm-6 server-said-stuff-box">
+						<p class="text-primary">Server said yes <span class="badge">{{globalNumberOfTimes}}</span> times.</p>
+						<p class="text-primary">Server said yes <span class="badge">{{sessionNumberOfTimes}}</span> times during this session.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/if}}
+		{{#if view==4}}
+			<div class="panel panel-warning">
+				<div class="panel-heading">
+					<h3 class="panel-title">AAAAAAH you{{apostrophe}}re not logged in any more</h3>
+				</div>
+				<div class="panel-body">
+					Don{{apostrophe}}t worry, we{{apostrophe}}ll keep your number safe.
+				</div>
+			</div>
+		{{/if}}
+	</script>
+
+	<!--DOCUMENTATION_GOES_HERE-->
+
+	<script src="build.js"></script>
+ </body>
+ </html>
