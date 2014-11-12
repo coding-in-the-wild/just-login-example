@@ -8,9 +8,9 @@ var Router = require('router')
 var IncrementCountApi = require('./incrementCountApi.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 //Just Login
-var JustLoginServerApi = require('just-login-server-api')
 var JustLoginCore = require('just-login-core')
 var justLoginDebouncer = require('just-login-debouncer')
+var JustLoginExampleSessionManager = require('just-login-example-session-manager')
 //Other
 var spaces = require('level-spaces')
 var xtend = require('xtend')
@@ -34,7 +34,8 @@ module.exports = function createServer(db, urlObject) {
 	var debouncingDb = spaces(db, 'debouncing')
 	justLoginDebouncer(core, debouncingDb) //modifies 'core'
 
-	var serverApi = JustLoginServerApi(core)
+	var sessionDb = spaces(db, 'debouncing')
+	var sessionManager = JustLoginExampleSessionManager(core, sessionDb)
 	var incrementCountApi = IncrementCountApi(core, db)
 
 	urlObject = urlObject || xtend(
@@ -83,7 +84,7 @@ module.exports = function createServer(db, urlObject) {
 	var server = http.createServer(route)
 
 	shoe(function (stream) { //Basic authentication api
-		var d = dnode(serverApi)
+		var d = dnode(sessionManager)
 		d.pipe(stream).pipe(d)
 	}).install(server, DNODE_ENDPOINT)
 
