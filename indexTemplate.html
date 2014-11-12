@@ -9,28 +9,34 @@
 
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="css/darkly.css" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/markdown-style.css" />
+	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/markdown-style.css" />
+</head>
 
- </head>
- <body>
-
- 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
- 		<div class="container">
- 			<div class="navbar-header">
- 				<div class="navbar-brand" href="#">Just Login</div>
- 			</div>
- 		</div>
- 	</nav>
-
+<body>
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a href="../" class="navbar-brand">Just Login</a>
+			</div>
+			<div class="navbar-collapse collapse" id="navbar-main">
+				<ul class="nav navbar-nav">
+					<li><a href="http://github.com/coding-in-the-wild/just-login-core" target="_blank">Core Source</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="http://github.com/coding-in-the-wild/just-login-example" target="_blank">This Site's Source</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 	<div class="container">
 		<div class="row">
 			<div class="jumbotron col-sm-offset-2 col-sm-8">
 				<h1>Just Login</h1>
- 				<p>
- 					A JavaScript library so that people can log in to your site with just their email address and you don't have to re-implement password storage.  YESSSSSS
- 				</p>
+				<p>
+					A JavaScript library so that people can log in to your site with just their email address and you don't have to re-implement password storage.  YESSSSSS
+				</p>
 			</div>
 		</div>
 
@@ -86,8 +92,8 @@
 	<script id="status-template" type="text/ractive">
 		{{#if view==1}}
 			<div class="panel panel-warning">
-			 	<div class="panel-heading">
-			 		<h3 class="panel-title">That{{apostrophe}}s not an email address!</h3>
+				<div class="panel-heading">
+					<h3 class="panel-title">That{{apostrophe}}s not an email address!</h3>
 				</div>
 				<div class="panel-body">
 					Just sayin{{apostrophe}}, <span class="badge">{{badEmail}}</span> doesn{{apostrophe}}t look right. Please try again.
@@ -96,8 +102,8 @@
 		{{/if}}
 		{{#if view==2}}
 			<div class="panel panel-danger">
-			 	<div class="panel-heading">
-			 		<h3 class="panel-title">STAHP!!!</h3>
+				<div class="panel-heading">
+					<h3 class="panel-title">STAHP!!!</h3>
 				</div>
 				<div class="panel-body">
 					Let{{apostrophe}}s not be spamming the server; wait {{debounceRemaining}} before sending another email.
