@@ -28,7 +28,7 @@ just-login-example
     },
     "email": {
       "auth": {
-        "user": "YOUR EMAIL HERE"
+        "user": "YOUR EMAIL HERE",
         "pass": "YOUR PASSWORD HERE"
       }
     }
