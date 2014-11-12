@@ -46,7 +46,7 @@ var core = JustLoginCore(coreDb)
 
 #Debouncer
 
-If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc].
+If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc]. This is to keep jerks from anonymously sending a bunch of login emails to others.
 
 To install: `npm install just-login-debouncer`
 
