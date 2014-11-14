@@ -1,4 +1,4 @@
-#Authentication
+#Why
 
 So you're making a site where users need to be authenticated to use its cool service. And you want to use a javascript module to do the authentication stuff.
 
@@ -12,7 +12,7 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 6. The tokens are basically impossible to guess, and expire shortly. (In this case, the token is an UUID and expires in just 5 minutes.)
 
 
-#How Just-Login works without passwords
+#How
 
 - A guy named Todd goes to a site using just-login. He types his email address into the email field and clicks `Login`.
 - When the `Login` button is pressed, the core generates a unique token, and saves Todd's session id and email address under it. The core then emits an event, `'authentication initiated'`. The core will delete the token after a set time. 
@@ -31,102 +31,85 @@ If you didn't mean to log in, ignore this email.
 - Todd has effectively authenticated himself via his email address.
 - No passwords, better security, easier to implement; what's not to like!?
 
-###Server Sample Code
+#Core
 
-To keep the server code clean, we will split it up into a few files.
+Include the stuff you need, and setup the database and core.
 
-###include the core in your server
+To install, you will need [npm][npm] which is shipped with [node.js][node]. Then run this command on your command line: `npm install just-login-core level`
+
 ```js
-var JustLoginCore = require('just-login-core')
 var level = require('level')
-
 var coreDb = level('./databases/core')
+var JustLoginCore = require('just-login-core')
 var core = JustLoginCore(coreDb)
+```
 
+#Debouncer
 
-var JustLoginDebouncer = require('just-login-debouncer')
-var JustLoginServerApi = require('just-login-server-api')
-var JustLoginEmailerHelper = require('./example-emailer.js') //Next example file
+If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc]. This is to keep jerks from anonymously sending a bunch of login emails to others.
 
-//Other
-var url = require('url')
-var http = require('http')
-var dnode = require('dnode')
-var shoe = require('shoe')
-var Static = require('node-static')
+To install: `npm install just-login-debouncer`
 
-var customApi = require('./yourCustomApi.js')
-
-//Create a few databases
+```js
 var debounceDb = level('./databases/debouncer')
+var JustLoginDebouncer = require('just-login-debouncer')
+justLoginDebouncer(core, debounceDb) //Modifies the core
+```
 
-//Set up just-login
-justLoginDebouncer(core) //Modifies the core
-JustLoginEmailerHelper(core) //Watches for events on the core
-var serverApi = JustLoginServerApi(core)
+#Session Manager
 
-//Set up your server
-var DNODE_ENDPOINT =  "/dnode"
-var TOKEN_ENDPOINT =  "/login"
-var STATIC_DIR = "./static/"
+You will need a session manager. You can check out the [Session Manager][snmg] used for this site.
 
-//File Requests
-function serve(file, req, res, code) {
-	file = (file && typeof file === 'string') ? file : url.parse(req.url).pathname
-	code = (code && typeof code === 'number') ? code : 200 //Status code
+To install: `npm install just-login-example-session-manager`
 
-	fileServer.serveFile(file, code, {}, req, res).on('error', function (err) {
-		if (err && (err.status === 404)) {
-			fileServer.serveFile('/404.html', 404, {}, req, res)
+The Session Manager takes a core. It returns two methods, one to continue an existing session, and one to create a new one. After a session is established, it gives back methods for logging you in or out, and checking if you're logged in. The difference from the core, is that a session is bound to each method given back.
+
+```js
+var JustLoginExampleSessionManager = require('just-login-server-api')
+var sessionManager = JustLoginExampleSessionManager(core)
+
+//Send sessionManager over to the server...
+```
+
+The following code is for the client.
+
+You'll need some thing on the client to get `sessionManager`'s methods. (This site uses [dnode][dnode].)
+
+```js
+//Get the session manager's methods from the server here...
+
+function establishSession(cb) {
+	var session = localStorage.getItem('session')
+	sessionManager.continueSession(session, function (err, api, sessionId) {
+		if (!err) {
+			cb(err, api)
 		} else {
-			res.writeHead((err && err.status) || 500, err.headers)
-			res.end(err && err.message, 'utf8')
+			sessionManager.createSession(function (err, api, sessionId) {
+				localStorage.setItem('session', sessionId)
+				cb(err, api)
+			})
 		}
 	})
 }
 
-//Router
-route.get('/', serve.bind(null, 'index.html'))
-route.get(TOKEN_ENDPOINT, function (req, res) {
-	var token = url.parse(req.url, true).query.token
-	core.authenticate(token, function (err, addr) {
-		if (err) { //Bad token, and other errors
-			serve('loginFailure.html', req, res, 500)
-		} else if (!addr) {
-			serve('loginFailure.html', req, res, 400)
-		} else {
-			serve('loginSuccess.html', req, res)
-		}
-	})
+establishSession(function (err, api) {
+	//do stuff with api here.
 })
-route.get(DNODE_ENDPOINT, function () {})
-route.get(CUSTOM_ENDPOINT, function () {})
-route.get(serve.bind(null, ''))
-
-//Http Server
-var server = http.createServer(route)
-
-shoe(function (stream) { //Basic authentication api
-	var d = dnode(serverApi)
-	d.pipe(stream).pipe(d)
-}).install(server, DNODE_ENDPOINT)
-
-shoe(function (stream) { //Custom api, (whatever api you implement want here)
-	var d = dnode(customApi)
-	d.pipe(stream).pipe(d)
-}).install(server, CUSTOM_ENDPOINT)
-
-server.listen(8080)
 ```
 
+#Emailer
 
-###emailer
+You have to send the token to the user somehow. If you plan to use email, check out the code below. Otherwise, keep scrollin'.
+
+To install: `npm install just-login-emailer`
+
 ```js
 var JustLoginEmailer = require('just-login-emailer')
 
 function htmlEmail(token) {
 	return 'Click ' + ('here'.link('http://example.com/login?token=' + token)) + ' to login like a boss.'
 }
+
 var transportOptions = { //if using gmail's sending server
 	host: "smtp.gmail.com",
 	port: 465,
@@ -142,42 +125,45 @@ var mailOptions = {
 	subject: 'Login Like A Boss'
 }
 
-function JustLoginEmailerHelper(core) {
-	JlEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) {
-		if (err) console.error(err)
-	})
-}
-
+JustLoginEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) {
+	if (err) console.error(err)
+})
 ```
 
-##What you need for your Website
-
-To use Just-Login, you only **need** the [Core][core]. But it makes a lot of sense to also use the [Server API][sapi].
-
-The [`Core`][core] is an event emitter that has some functions as properties. The functions are for logging you in or out, and checking if you're logged in.
-
-The [`Server API`][sapi] takes a core. It returns two functions, one to continue and existing session, and one to create a new one. After a session is established, it gives back function for logging you in or out, and checking if you're logged in. The difference from the core, is that a session is bound to each function given back.
-
-The [`Debouncer`][dbnc] disallows `core.beginAuthentication()` to be called in too quick of succession.
-
-#Sending the Token
-If you plan to email the user, you might as well use the [Emailer][emlr].
-
-If you want to use something else, you'll have to write a bit of code. See the example below:
+#Not Email
+If you don't want to use email, you'll have to write a bit of code. See the example below:
 
 ```js
 core.on('authentication initiated', function (loginRequest) {
-
 	//replace 'sendMessage' with whatever function you have for sending a message to the user.
 	sendMessage(loginRequest.contactAddress, 'Here is your login code:\n' + loginRequest.token)
+})
+```
+
+#Authenticating the User
+
+After a user clicks the link in the email, they will be directed to a url that might look something like this: `example.com/login`. Set up your routing so that when the user hits that endpoint, this code runs.
+
+```js
+var url = require('url')
+
+var token = url.parse(req.url, true).query.token
+core.authenticate(token, function (err, addr) {
+	if (err || !addr) { //Bad token, and other errors
+		//serve the login failure page
+	} else {
+		//serve the login success page
+	}
 })
 ```
 
 
 [core]: https://github.com/coding-in-the-wild/just-login-core
 [dbnc]: https://github.com/coding-in-the-wild/just-login-debouncer
-[sapi]: https://github.com/coding-in-the-wild/just-login-server-api
+[snmg]: https://github.com/coding-in-the-wild/just-login-example-session-manager
 [clnt]: https://github.com/coding-in-the-wild/just-login-client
 [emlr]: https://github.com/coding-in-the-wild/just-login-emailer
 [dnode]: https://github.com/substack/dnode
 [level]: https://github.com/rvagg/node-levelup
+[node]: http://nodejs.org/download
+[npm]: http://npmjs.org

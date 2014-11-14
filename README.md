@@ -28,7 +28,7 @@ just-login-example
     },
     "email": {
       "auth": {
-        "user": "YOUR EMAIL HERE"
+        "user": "YOUR EMAIL HERE",
         "pass": "YOUR PASSWORD HERE"
       }
     }
@@ -48,6 +48,7 @@ just-login-example
 #Just-Login Modules
 
 - [just-login-core](https://github.com/ArtskydJ/just-login-core)
-- [just-login-server-api](https://github.com/ArtskydJ/just-login-server-api)
+- [just-login-debouncer](https://github.com/ArtskydJ/just-login-debouncer)
+- [just-login-example-session-manager](https://github.com/ArtskydJ/just-login-example-session-manager)
 - [just-login-client](https://github.com/ArtskydJ/just-login-client)
 - [just-login-emailer](https://github.com/ArtskydJ/just-login-emailer)
