@@ -33,68 +33,20 @@ If you didn't mean to log in, ignore this email.
 
 #Core
 
-Include the stuff you need, and setup the database and core.
+Include the stuff you need, and setup the database and core. The core takes a [levelup][levelup] database, this example uses [level][level].
 
-To install, you will need [npm][npm] which is shipped with [node.js][node]. Then run this command on your command line: `npm install just-login-core level`
+To install, you will need [npm][npm] which is shipped with [node.js][node]. Then run these commands on your command line:
+
+`npm install just-login-core`
+
+Feel free to use a different [level][level] database.
+`npm install level`
 
 ```js
 var level = require('level')
 var coreDb = level('./databases/core')
 var JustLoginCore = require('just-login-core')
 var core = JustLoginCore(coreDb)
-```
-
-#Debouncer
-
-If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc]. This is to keep jerks from anonymously sending a bunch of login emails to others.
-
-To install: `npm install just-login-debouncer`
-
-```js
-var debounceDb = level('./databases/debouncer')
-var JustLoginDebouncer = require('just-login-debouncer')
-justLoginDebouncer(core, debounceDb) //Modifies the core
-```
-
-#Session Manager
-
-You will need a session manager. You can check out the [Session Manager][snmg] used for this site.
-
-To install: `npm install just-login-example-session-manager`
-
-The Session Manager takes a core. It returns two methods, one to continue an existing session, and one to create a new one. After a session is established, it gives back methods for logging you in or out, and checking if you're logged in. The difference from the core, is that a session is bound to each method given back.
-
-```js
-var JustLoginExampleSessionManager = require('just-login-server-api')
-var sessionManager = JustLoginExampleSessionManager(core)
-
-//Send sessionManager over to the server...
-```
-
-The following code is for the client.
-
-You'll need some thing on the client to get `sessionManager`'s methods. (This site uses [dnode][dnode].)
-
-```js
-//Get the session manager's methods from the server here...
-
-function establishSession(cb) {
-	var session = localStorage.getItem('session')
-	sessionManager.continueSession(session, function (err, api, sessionId) {
-		if (!err) {
-			cb(err, api)
-		} else {
-			sessionManager.createSession(function (err, api, sessionId) {
-				localStorage.setItem('session', sessionId)
-				cb(err, api)
-			})
-		}
-	})
-}
-
-establishSession(function (err, api) {
-	//do stuff with api here.
-})
 ```
 
 #Emailer
@@ -130,19 +82,18 @@ JustLoginEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) 
 })
 ```
 
-#Not Email
-If you don't want to use email, you'll have to write a bit of code. See the example below:
+#Testing without Email
+If you don't want to use email for testing purposes, (or you want to use texting,) you'll have to write a bit of code. See the example below:
 
 ```js
 core.on('authentication initiated', function (loginRequest) {
-	//replace 'sendMessage' with whatever function you have for sending a message to the user.
-	sendMessage(loginRequest.contactAddress, 'Here is your login code:\n' + loginRequest.token)
+	console.log(loginRequest.contactAddress + ' has ' + loginRequest.token + ' as their token.')
 })
 ```
 
-#Authenticating the User
+#Core Usage
 
-After a user clicks the link in the email, they will be directed to a url that might look something like this: `example.com/login`. Set up your routing so that when the user hits that endpoint, this code runs.
+After a user clicks the link in the email, they will be directed to a url that might look something like this: `example.com/login`. Set up an endpoint so that this code runs when a user hits it.
 
 ```js
 var url = require('url')
@@ -157,6 +108,20 @@ core.authenticate(token, function (err, addr) {
 })
 ```
 
+- `session id` The string used to identify the browser session. This would come from your session manager. There are some on npm, including express-session, and session. You can also check out the [simple implementation][snmg] used for this site.
+
+#Debouncer
+
+If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc]. This is to keep jerks from anonymously sending a bunch of login emails to others.
+
+To install: `npm install just-login-debouncer`
+
+```js
+var debounceDb = level('./databases/debouncer')
+var JustLoginDebouncer = require('just-login-debouncer')
+justLoginDebouncer(core, debounceDb) //Modifies the core
+```
+
 
 [core]: https://github.com/coding-in-the-wild/just-login-core
 [dbnc]: https://github.com/coding-in-the-wild/just-login-debouncer
@@ -164,6 +129,7 @@ core.authenticate(token, function (err, addr) {
 [clnt]: https://github.com/coding-in-the-wild/just-login-client
 [emlr]: https://github.com/coding-in-the-wild/just-login-emailer
 [dnode]: https://github.com/substack/dnode
+[levelup]: https://github.com/rvagg/node-levelup
 [level]: https://github.com/rvagg/node-levelup
 [node]: http://nodejs.org/download
 [npm]: http://npmjs.org
