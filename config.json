@@ -17,6 +17,6 @@
       "custom": "/dnode-custom",
       "token": "/magical-login"
     },
-    "staticDir": "./static/"
+    "staticDir": "../static/"
   }
 }

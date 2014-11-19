@@ -93,7 +93,45 @@ core.on('authentication initiated', function (loginRequest) {
 
 #Core Usage
 
-After a user clicks the link in the email, they will be directed to a url that might look something like this: `example.com/login`. Set up an endpoint so that this code runs when a user hits it.
+The core is an event emitter with functions as properties. The events should not be exposed to the client, as the token is on one of the events.
+
+##core.isAuthenticated(sessionId, cb)
+
+Checks if a user is authenticated. (Authenticated = Logged in.)
+
+This function should be exposed to the client.
+
+- `session id` is the string used to identify the browser session. This should come from your session manager. There are some on npm, including [express-session](http://npmjs.org/package/express-session), and [session](http://npmjs.org/package/session). You can also check out the simple [manager][snmg] used for this site.
+- `cb` is a function with the following arguments:
+	- `err` is null if there was no error, and is an Error object if there was an error.
+	- `contactAddress` is null is the user is not authenticated, and is a string of their contact address if they are authenticated.
+
+##core.beginAuthentication(sessionId, contactAddress, cb)
+
+Starts the authentication process by emitting the 'authentication initiated' event with a token and the contact address. Something needs to catch the event, send an email with the token to the address. Feel free to try the [Just Login Emailer][emlr].
+
+This function should be exposed to the client.
+
+- `sessionId` is a string of the session id that is trying to get authenticated.
+- `contactAddress` is string of the user's contact info, (usually an email address).
+- `cb` is a function with the following arguments:
+	- `err` is null if there is no error, and is an Error object is there was an error.
+	- `loginRequest` is an object with the authentication request information. The object is identical to the object emitted in the event, with the following properties:
+		- `token` is a string of the token.
+		- `contactAddress` is a string with the contact address.
+
+##core.authenticate(token, cb)
+
+Sets the appropriate session id to be authenticated with the contact address associated with that token.
+
+This function must not be exposed to the client.
+
+- `token` is a string of the token that is trying to get authenticated.
+- `cb` is a function with the following arguments: (Same as [`core.isAuthenticated()`](#coreisauthenticatedsessionid-cb).)
+	- `err` is null if there was no error, and is an Error object if there was an error.
+	- `contactAddress` is null is the user is not authenticated, and is a string of their contact address if they are authenticated.
+
+After a user clicks the link in the email, they will be directed to an endpoint that might look something like this: `example.com/login`. Set up your routing so that this code runs when a user hits that endpoint.
 
 ```js
 var url = require('url')
@@ -108,7 +146,13 @@ core.authenticate(token, function (err, addr) {
 })
 ```
 
-- `session id` The string used to identify the browser session. This would come from your session manager. There are some on npm, including express-session, and session. You can also check out the [simple implementation][snmg] used for this site.
+##core.unauthenticate(sessionId, cb)
+
+Self explanatory, I think.
+
+- `token` is a string of the token that is trying to get authenticated.
+- `cb` is an optional function with the following argument:
+	- `err` is null if there was no error, and is an Error object if there was an error.
 
 #Debouncer
 

@@ -1,6 +1,7 @@
 var Static = require('node-static')
 var Router = require('router')
 var url = require('url')
+var path = require('path')
 
 var config = require('confuse')().justLogin
 var STATIC_DIR = config.staticDir
@@ -10,7 +11,7 @@ var CUSTOM_ENDPOINT = config.endpoints.custom
 
 module.exports = function (core) {
 	var route = Router()
-	var fileServer = new Static.Server(STATIC_DIR, {gzip: true})
+	var fileServer = new Static.Server(path.join(__dirname, STATIC_DIR), {gzip: true})
 
 	function serve(file, req, res, code) {
 		file = (file && typeof file === 'string') ? file : url.parse(req.url).pathname
