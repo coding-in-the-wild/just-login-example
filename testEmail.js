@@ -1,13 +1,13 @@
 var emailer = require('just-login-emailer')
 var emitter = new (require('events').EventEmitter)
-var htmlEmail = function (token) {return 'Your token is: ' + token}
-var config = require('confuse')().justLogin
+var htmlEmail = function (token) {return '<h1>Hello</h1>\n' + token}
+var config = require('confuse')().justLogin.email
 var mailOpts = {
-	from: config.email.auth.user,
-	subject: config.emailSubject
+	from: config.auth.user,
+	subject: 'hello'
 }
 
-emailer(emitter, htmlEmail, config.email, mailOpts, function (err) {
+emailer(emitter, htmlEmail, config, mailOpts, function (err) {
 	if (err) {
 		console.log('ERROR:', err)
 	}
