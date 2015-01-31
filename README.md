@@ -45,11 +45,11 @@ Example of a site using the just-login modules.
 
 #Just-Login Modules
 
-- [just-login-core](https://github.com/ArtskydJ/just-login-core)
-- [just-login-debouncer](https://github.com/ArtskydJ/just-login-debouncer)
-- [just-login-example-session-manager](https://github.com/ArtskydJ/just-login-example-session-manager)
-- [just-login-client](https://github.com/ArtskydJ/just-login-client)
-- [just-login-emailer](https://github.com/ArtskydJ/just-login-emailer)
+- [just-login-core](https://github.com/coding-in-the-wild/just-login-core)
+- [just-login-client](https://github.com/coding-in-the-wild/just-login-client)
+- [just-login-debouncer](https://github.com/coding-in-the-wild/just-login-debouncer)
+- [just-login-emailer](https://github.com/coding-in-the-wild/just-login-emailer)
+- [just-login-example-session-manager](https://github.com/coding-in-the-wild/just-login-example-session-manager)
 
 #License
 
