@@ -1,9 +1,7 @@
 just-login-example
 ==================
 
-- [Try It](#try-it)
-- [Use It](#use-it)
-- [Just-Login Modules](#just-login-modules)
+Example of a site using the just-login modules.
 
 #Try It
 
@@ -52,3 +50,7 @@ just-login-example
 - [just-login-example-session-manager](https://github.com/ArtskydJ/just-login-example-session-manager)
 - [just-login-client](https://github.com/ArtskydJ/just-login-client)
 - [just-login-emailer](https://github.com/ArtskydJ/just-login-emailer)
+
+#License
+
+[VOL](http://veryopenlicense.com/)
