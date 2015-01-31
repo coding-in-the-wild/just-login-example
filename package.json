@@ -4,6 +4,7 @@
   "main": "./server.js",
   "author": "ArtskydJ <josephdykstra@gmail.com>",
   "description": "The example site of the just login suite",
+  "license": "VOL",
   "keywords": [
     "just login"
   ],
