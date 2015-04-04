@@ -26,7 +26,9 @@
     "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
     "info": "gfm2html info.md static/info.html",
-    "prestart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node putInfoIntoHtml.js"
+    "start": "nohup node server.js &",
+    "stop": "kill $(ps ax | awk '/node[ ]server.js/ {print $1}')",
+    "poststart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node putInfoIntoHtml.js"
   },
   "dependencies": {
     "confuse": "0.0.1",
