@@ -21,6 +21,7 @@ Example of a site using the just-login modules.
 ```json
 {
   "justLogin": {
+    "port": 80,
     "url": {
       "hostname":"localhost"
     },
@@ -39,7 +40,7 @@ Example of a site using the just-login modules.
 9. Go to your email, open the email from `justloginexample`, and click the link.
 10. Go back to your localhost tab in your browser. Click `Click Meh`. (You should be logged in.)
 11. Close the tab. Open [Localhost](http://localhost) again.
-12. Click `Click Meh`. (You should still be logged in. Feel free to keep clicking, to make your number higher) 
+12. Click `Click Meh`. (You should still be logged in. Feel free to keep clicking, to make your number higher)
 13. Click `Logout`. Click `Click Meh`. (You shouldn't be logged in.)
 14. Use the just-login modules for your website. :)
 
