@@ -1,7 +1,7 @@
 {
   "name": "just-login-example",
   "version": "0.0.1",
-  "main": "./server.js",
+  "main": "server.js",
   "author": "ArtskydJ <josephdykstra@gmail.com>",
   "description": "The example site of the just login suite",
   "license": "VOL",
@@ -26,8 +26,8 @@
     "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
     "info": "gfm2html info.md static/info.html",
-    "start": "nohup node server.js &",
-    "stop": "kill $(ps ax | awk '/node[ ]server.js/ {print $1}')",
+    "start": "nohup node . 1028 &",
+    "stop": "kill $(ps x | awk '/node \\. 1028/ {print $1}')",
     "poststart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node putInfoIntoHtml.js"
   },
   "dependencies": {
