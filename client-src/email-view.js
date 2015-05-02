@@ -12,8 +12,7 @@ module.exports = function() {
 			loggedIn: false,
 			loggingIn: false,
 			emailAddressInput: '',
-			authenticatedEmailAddress: null,
-			apostrophe: "'"
+			authenticatedEmailAddress: null
 		},
 		append: true
 	})

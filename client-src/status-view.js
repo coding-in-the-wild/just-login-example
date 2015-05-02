@@ -16,8 +16,7 @@ module.exports = function() {
 		sessionNumberOfTimes: 0,
 		debounceRemaining: "",
 		badEmail: "",
-		view: views.empty,
-		apostrophe: "'"
+		view: views.empty
 	}
 
 	var ractive = new Ractive({

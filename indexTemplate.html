@@ -56,7 +56,7 @@
 		{{#if loggedIn}}
 			<div class="row">
 				<div class="col-sm-8">
-					<p class="text-success youre-totally-logged-in">You{{apostrophe}}re totally logged in as {{authenticatedEmailAddress}}!</p>
+					<p class="text-success youre-totally-logged-in">You&#39;re totally logged in as {{authenticatedEmailAddress}}!</p>
 				</div>
 				<div class="col-sm-4">
 					<button class="btn btn-default" on-click="logout">Logout</button>
@@ -93,10 +93,10 @@
 		{{#if view==1}}
 			<div class="panel panel-warning">
 				<div class="panel-heading">
-					<h3 class="panel-title">That{{apostrophe}}s not an email address!</h3>
+					<h3 class="panel-title">That&#39;s not an email address!</h3>
 				</div>
 				<div class="panel-body">
-					Just sayin{{apostrophe}}, <span class="badge">{{badEmail}}</span> doesn{{apostrophe}}t look right. Please try again.
+					Just sayin&#39;, <span class="badge">{{badEmail}}</span> doesn&#39;t look right. Please try again.
 				</div>
 			</div>
 		{{/if}}
@@ -106,19 +106,19 @@
 					<h3 class="panel-title">STAHP!!!</h3>
 				</div>
 				<div class="panel-body">
-					Let{{apostrophe}}s not be spamming the server; wait {{debounceRemaining}} before sending another email.
+					Let&#39;s not be spamming the server; wait {{debounceRemaining}} before sending another email.
 				</div>
 			</div>
 		{{/if}}
 		{{#if view==3}}
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">OH SNAP you{{apostrophe}}re totally authenticated!</h3>
+				<h3 class="panel-title">OH SNAP you&#39;re totally authenticated!</h3>
 			</div>
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-sm-6">
-						You can click this button to see if you{{apostrophe}}re still authenticated.
+						You can click this button to see if you&#39;re still authenticated.
 					</div>
 					<div class="col-sm-6">
 						<button type="button" class="btn btn-info pull-right" on-click="checkAuthentication">CLICK MEH</button>
@@ -134,10 +134,10 @@
 		{{#if view==4}}
 			<div class="panel panel-warning">
 				<div class="panel-heading">
-					<h3 class="panel-title">AAAAAAH you{{apostrophe}}re not logged in any more</h3>
+					<h3 class="panel-title">AAAAAAH you&#39;re not logged in any more</h3>
 				</div>
 				<div class="panel-body">
-					Don{{apostrophe}}t worry, we{{apostrophe}}ll keep your number safe.
+					Don&#39;t worry, we&#39;ll keep your number safe.
 				</div>
 			</div>
 		{{/if}}
