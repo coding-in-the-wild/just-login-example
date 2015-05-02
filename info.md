@@ -1,4 +1,4 @@
-#Why
+# Why
 
 So you're making a site where users need to be authenticated to use its cool service. And you want to use a javascript module to do the authentication stuff.
 
@@ -12,10 +12,10 @@ Do you really want to have passwords? [Skip passwords!](https://medium.com/@ninj
 6. The tokens are basically impossible to guess, and expire shortly. (In this case, the token is an UUID and expires in just 5 minutes.)
 
 
-#How
+# How
 
 - A guy named Todd goes to a site using just-login. He types his email address into the email field and clicks `Login`.
-- When the `Login` button is pressed, the core generates a unique token, and saves Todd's session id and email address under it. The core then emits an event, `'authentication initiated'`. The core will delete the token after a set time. 
+- When the `Login` button is pressed, the core generates a unique token, and saves Todd's session id and email address under it. The core then emits an event, `'authentication initiated'`. The core will delete the token after a set time.
 - When the emailer is sees an `'authentication initiated'` event, it emails Todd, and says something like this:
 
 ```
@@ -31,7 +31,7 @@ If you didn't mean to log in, ignore this email.
 - Todd has effectively authenticated himself via his email address.
 - No passwords, better security, easier to implement; what's not to like!?
 
-#Core
+# Core
 
 Include the stuff you need, and setup the database and core. The core takes a [levelup][levelup] database, this example uses [level][level].
 
@@ -49,7 +49,7 @@ var JustLoginCore = require('just-login-core')
 var core = JustLoginCore(coreDb)
 ```
 
-#Emailer
+# Emailer
 
 You have to send the token to the user somehow. If you plan to use email, check out the code below. Otherwise, keep scrollin'.
 
@@ -82,7 +82,7 @@ JustLoginEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) 
 })
 ```
 
-#Testing without Email
+# Testing without Email
 If you don't want to use email for testing purposes, (or you want to use texting,) you'll have to write a bit of code. See the example below:
 
 ```js
@@ -91,11 +91,11 @@ core.on('authentication initiated', function (loginRequest) {
 })
 ```
 
-#Core Usage
+# Core Usage
 
 The core is an event emitter with functions as properties. The events should not be exposed to the client, as the token is on one of the events.
 
-##core.isAuthenticated(sessionId, cb)
+## core.isAuthenticated(sessionId, cb)
 
 Checks if a user is authenticated. (Authenticated = Logged in.)
 
@@ -106,7 +106,7 @@ This function should be exposed to the client.
 	- `err` is null if there was no error, and is an Error object if there was an error.
 	- `contactAddress` is null is the user is not authenticated, and is a string of their contact address if they are authenticated.
 
-##core.beginAuthentication(sessionId, contactAddress, cb)
+## core.beginAuthentication(sessionId, contactAddress, cb)
 
 Starts the authentication process by emitting the 'authentication initiated' event with a token and the contact address. Something needs to catch the event, send an email with the token to the address. Feel free to try the [Just Login Emailer][emlr].
 
@@ -120,7 +120,7 @@ This function should be exposed to the client.
 		- `token` is a string of the token.
 		- `contactAddress` is a string with the contact address.
 
-##core.authenticate(token, cb)
+## core.authenticate(token, cb)
 
 Sets the appropriate session id to be authenticated with the contact address associated with that token.
 
@@ -146,7 +146,7 @@ core.authenticate(token, function (err, addr) {
 })
 ```
 
-##core.unauthenticate(sessionId, cb)
+## core.unauthenticate(sessionId, cb)
 
 Self explanatory, I think.
 
@@ -154,7 +154,7 @@ Self explanatory, I think.
 - `cb` is an optional function with the following argument:
 	- `err` is null if there was no error, and is an Error object if there was an error.
 
-#Debouncer
+# Debouncer
 
 If you want the `core.beginAuthentication()` calls to be debounced, (not allowed multiple times within a certain period,) then you can use the [debouncer][dbnc]. This is to keep jerks from anonymously sending a bunch of login emails to others.
 
