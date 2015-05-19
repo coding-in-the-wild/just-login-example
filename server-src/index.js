@@ -7,6 +7,7 @@ var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var Routing = require('./routing.js')
 //Just Login
 var JustLoginCore = require('just-login-core')
+var justLoginSessionState = require('just-login-session-state')
 var justLoginDebouncer = require('just-login-debouncer')
 var JustLoginExampleSessionManager = require('just-login-example-session-manager')
 //Other
@@ -24,13 +25,10 @@ module.exports = function createServer(db, urlObject) {
 		throw new Error('Must provide a levelup database')
 	}
 
-	var core = JustLoginCore(db)
-	
-	var debouncingDb = spaces(db, 'debouncing')
-	justLoginDebouncer(core, debouncingDb) //modifies 'core'
-
-	var sessionDb = spaces(db, 'debouncing')
-	var sessionManager = JustLoginExampleSessionManager(core, sessionDb)
+	var core = JustLoginCore(spaces(db, 'core'))
+	justLoginDebouncer(core, spaces(db, 'debouncing'))
+	justLoginSessionState(core, db) // uses spaces internally
+	var sessionManager = JustLoginExampleSessionManager(core, spaces(db, 'sess-exp'))
 	var incrementCountApi = IncrementCountApi(core, db)
 
 	urlObject = urlObject || xtend(
