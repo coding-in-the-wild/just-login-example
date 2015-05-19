@@ -13,10 +13,9 @@ fs.readFile('./info.md', {encoding: 'utf8'}, function (err, infoMd) {
 
 			var fullHtml = indexHtml.replace('<!--DOCUMENTATION_GOES_HERE-->', html)
 
-			fs.writeFile('./static/index.html', fullHtml, function (err) {
+			fs.writeFile('../static/index.html', fullHtml, function (err) {
 				if (err) throw err
-			})	
+			})
 		})
 	})
 })
-
