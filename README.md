@@ -1,6 +1,8 @@
 just-login-example
 ==================
 
+[![Build Status](https://travis-ci.org/coding-in-the-wild/justlogin.xyz.svg)](https://travis-ci.org/coding-in-the-wild/justlogin.xyz)
+
 Example of a site using the just-login modules.
 
 #Try It
