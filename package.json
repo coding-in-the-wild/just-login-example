@@ -1,5 +1,5 @@
 {
-  "name": "just-login-example",
+  "name": "justlogin.xyz",
   "version": "0.0.1",
   "main": "server.js",
   "author": "ArtskydJ <josephdykstra@gmail.com>",
@@ -8,15 +8,14 @@
   "keywords": [
     "just login"
   ],
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
+  },
+  "homepage": "https://github.com/coding-in-the-wild/just-login-example",
   "repository": {
     "type": "git",
     "url": "https://github.com/coding-in-the-wild/just-login-example"
-  },
-  "devDependencies": {
-    "level-mem": "^0.18.0",
-    "superagent": "^0.18.0",
-    "tap": "~0.4.8",
-    "brucedown": "^1.1.0"
   },
   "directories": {
     "test": "test"
@@ -34,26 +33,29 @@
     "confuse": "0.0.1",
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
+    "ecstatic": "^0.8.0",
     "email-validator": "^1.0.1",
     "just-login-client": "^1.2.4",
-    "just-login-core": "^2.0.0",
-    "just-login-session-state": "^1.0.0",
+    "just-login-core": "^2.0.1",
     "just-login-debouncer": "^1.3.0",
     "just-login-emailer": "^1.1.0",
     "just-login-example-session-manager": "^1.2.0",
-    "level": "^0.18.0",
-    "level-spaces": "^1.1.1",
-    "ms": "^0.6.2",
-    "node-static": "^0.7.6",
-    "ractive": "^0.5.0",
-    "router": "^0.6.2",
+    "just-login-session-state": "^1.0.0",
+    "level": "^1.2.0",
+    "level-spaces": "^2.0.0",
+    "ms": "^0.7.1",
+    "ractive": "^0.7.3",
+    "router": "^1.1.2",
     "run-waterfall": "^1.0.0",
+    "send": "^0.13.0",
     "shoe": "0.0.15",
-    "weak": "^0.3.3",
-    "xtend": "^3.0.0"
+    "tape": "^4.0.0",
+    "xtend": "^4.0.0"
   },
-  "bugs": {
-    "url": "https://github.com/coding-in-the-wild/just-login-example/issues"
-  },
-  "homepage": "https://github.com/coding-in-the-wild/just-login-example"
+  "devDependencies": {
+    "brucedown": "^1.1.0",
+    "level-mem": "^0.18.0",
+    "superagent": "^1.2.0",
+    "tap": "^1.3.1"
+  }
 }

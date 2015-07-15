@@ -1,4 +1,4 @@
-var test = require('tap').test
+var test = require('tape')
 var Server = require('../server-src/index.js')
 var level = require('level-mem')
 var request = require('superagent') //used in 3
@@ -31,7 +31,7 @@ test('server has dnode', function (t) { //dnode running and exposing api
 })
 */
 
-var test = require('tap').test
+
 
 test('server serves files', function (t) { //serving files
 	var server = new Server(level('wat'))
