@@ -15,15 +15,12 @@ var spaces = require('level-spaces')
 var xtend = require('xtend')
 //Config
 var config = require('confuse')().justLogin
-var DEFAULT_URL_OBJECT = config.url
-var TOKEN_ENDPOINT =  config.endpoints.token
+var BASE_URL = require('url').resolve(config.baseUrl, config.endpoints.token)
 var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 
-module.exports = function createServer(db, urlObject) {
-	if (!db) {
-		throw new Error('Must provide a levelup database')
-	}
+module.exports = function createServer(db, baseUrl) {
+	if (!db) throw new Error('Must provide a levelup database')
 
 	var core = JustLoginCore(spaces(db, 'core'))
 	justLoginDebouncer(core, spaces(db, 'debouncing'))
@@ -31,21 +28,14 @@ module.exports = function createServer(db, urlObject) {
 	var sessionManager = JustLoginExampleSessionManager(core, spaces(db, 'sess-exp'))
 	var incrementCountApi = IncrementCountApi(core, db)
 
-	urlObject = urlObject || xtend(
-		DEFAULT_URL_OBJECT,
-		{ pathname: TOKEN_ENDPOINT }
-	)
-
-	sendEmailOnAuth(core, urlObject, function (err, info) {
+	sendEmailOnAuth(core, baseUrl || BASE_URL, function (err, info) {
 		if (err) {
 			console.log('Error sending the email:')
 			console.error(err)
 		}
 	})
 
-	var routing = Routing(core)
-
-	var server = http.createServer(routing)
+	var server = http.createServer(Routing(core))
 
 	shoe(function (stream) { //Basic authentication api
 		var d = dnode(sessionManager)

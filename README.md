@@ -24,9 +24,7 @@ Example of a site using the just-login modules.
 {
   "justLogin": {
     "port": 80,
-    "url": {
-      "hostname":"localhost"
-    },
+    "url": "http://localhost",
     "email": {
       "auth": {
         "user": "YOUR EMAIL HERE",

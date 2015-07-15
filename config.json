@@ -1,8 +1,7 @@
 {
   "justLogin": {
-    "url": {
-      "protocol":"http"
-    },
+    "port": 80,
+    "baseUrl": "http://localhost",
     "email": {
       "host": "smtp.gmail.com",
       "port": 465,
@@ -17,6 +16,6 @@
       "custom": "/dnode-custom",
       "token": "/magical-login"
     },
-    "staticDir": "../static/"
+    "staticDir": "./static/"
   }
 }
