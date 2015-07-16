@@ -21,7 +21,6 @@
     "test": "node test/test.js",
     "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "info": "gfm2html build/info.md static/info.html",
     "start": "nohup node . 1028 &",
     "stop": "kill $(ps x | awk '/node \\. 1028/ {print $1}') || echo ''",
     "poststart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node build/putInfoIntoHtml.js"
@@ -41,6 +40,7 @@
     "level": "^1.2.0",
     "level-spaces": "^2.0.0",
     "ms": "^0.7.1",
+    "ractive": "^0.7.3",
     "run-waterfall": "^1.0.0",
     "shoe": "0.0.15",
     "string-template": "^0.2.1",
