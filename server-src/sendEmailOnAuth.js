@@ -9,7 +9,8 @@ var emailTemplate = fs.readFileSync(path.resolve(__dirname, 'emailTemplate.html'
 emailTemplate = compile(emailTemplate)
 
 module.exports = function(core, baseUrl, cb) {
-	var mailOpts = {
+
+	var mailOpts = (process.env.CI) ? null : {
 		from: config.email.auth.user,
 		subject: config.emailSubject
 	}
