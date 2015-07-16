@@ -2,14 +2,6 @@
   "justLogin": {
     "port": 80,
     "baseUrl": "http://localhost",
-    "email": {
-      "host": "smtp.gmail.com",
-      "port": 465,
-      "secure": true,
-      "auth": {
-        "user": "justloginexample@gmail.com"
-      }
-    },
     "emailSubject": "Login to this site!",
     "endpoints": {
       "dnode": "/dnode-justlogin",
