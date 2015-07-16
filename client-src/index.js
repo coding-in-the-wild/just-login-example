@@ -58,7 +58,7 @@ domready(function() {
 			statusView.emit('loaded')
 			jlApi.beginAuthentication(emailAddress, function (err, obj) {
 				if (err && err.debounce) {
-					var message = (obj && obj.remaining) ? ms( obj.remaining, {long: true}) : "a little while"
+					var message = (obj && obj.remaining) ? ms( obj.remaining, { long: true }) : 'a little while'
 					statusView.emit('debounce', message)
 				}
 			})

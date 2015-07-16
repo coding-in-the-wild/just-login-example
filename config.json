@@ -1,22 +1,13 @@
 {
   "justLogin": {
-    "url": {
-      "protocol":"http"
-    },
-    "email": {
-      "host": "smtp.gmail.com",
-      "port": 465,
-      "secure": true,
-      "auth": {
-        "user": "justloginexample@gmail.com"
-      }
-    },
+    "port": 80,
+    "baseUrl": "http://localhost",
     "emailSubject": "Login to this site!",
     "endpoints": {
       "dnode": "/dnode-justlogin",
       "custom": "/dnode-custom",
       "token": "/magical-login"
     },
-    "staticDir": "../static/"
+    "staticDir": "./static/"
   }
 }
