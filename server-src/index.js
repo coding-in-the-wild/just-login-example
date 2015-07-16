@@ -10,10 +10,9 @@ var JustLoginCore = require('just-login-core')
 var justLoginSessionState = require('just-login-session-state')
 var justLoginDebouncer = require('just-login-debouncer')
 var JustLoginExampleSessionManager = require('just-login-example-session-manager')
-//Other
+
 var spaces = require('level-spaces')
-var xtend = require('xtend')
-//Config
+
 var config = require('confuse')().justLogin
 var BASE_URL = require('url').resolve(config.baseUrl, config.endpoints.token)
 var DNODE_ENDPOINT =  config.endpoints.dnode
@@ -26,13 +25,10 @@ module.exports = function createServer(db, baseUrl) {
 	justLoginDebouncer(core, spaces(db, 'debouncing'))
 	justLoginSessionState(core, db) // uses spaces internally
 	var sessionManager = JustLoginExampleSessionManager(core, spaces(db, 'sess-exp'))
-	var incrementCountApi = IncrementCountApi(core, db)
+	var incrementCountApi = IncrementCountApi(core, db) // uses spaces internally
 
 	sendEmailOnAuth(core, baseUrl || BASE_URL, function (err, info) {
-		if (err) {
-			console.log('Error sending the email:')
-			console.error(err)
-		}
+		if (err) console.error('Error sending the email:', err)
 	})
 
 	var server = http.createServer(Routing(core))
