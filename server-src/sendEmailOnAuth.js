@@ -8,13 +8,7 @@ var config = require('confuse')().justLogin
 var emailTemplate = fs.readFileSync(path.resolve(__dirname, 'emailTemplate.html'), 'utf8')
 emailTemplate = compile(emailTemplate)
 
-module.exports = function(core, baseUrl, cb) {
-
-	var mailOpts = (process.env.CI) ? null : {
-		from: config.email.auth.user,
-		subject: config.emailSubject
-	}
-
+module.exports = function(core, baseUrl) {
 	function htmlEmail(loginToken) {
 		return emailTemplate({
 			baseUrl: baseUrl,
@@ -22,5 +16,15 @@ module.exports = function(core, baseUrl, cb) {
 		})
 	}
 
-	JustLoginEmailer(core, htmlEmail, config.email, mailOpts, cb)
+	var emailer = JustLoginEmailer(core, {
+		createHtmlEmail: htmlEmail,
+		transport: config.email,
+		mail: {
+			subject: config.emailSubject
+		}
+	})
+
+	emailer.on('error', function (err) {
+		console.error('Error sending the email:', err)
+	})
 }

@@ -27,9 +27,7 @@ module.exports = function createServer(db, baseUrl) {
 	var sessionManager = JustLoginExampleSessionManager(core, spaces(db, 'sess-exp'))
 	var incrementCountApi = IncrementCountApi(core, db) // uses spaces internally
 
-	sendEmailOnAuth(core, baseUrl || BASE_URL, function (err, info) {
-		if (err) console.error('Error sending the email:', err)
-	})
+	sendEmailOnAuth(core, baseUrl || BASE_URL)
 
 	var server = http.createServer(Routing(core))
 

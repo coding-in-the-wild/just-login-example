@@ -34,7 +34,7 @@
     "just-login-client": "^1.2.4",
     "just-login-core": "^2.0.1",
     "just-login-debouncer": "^1.3.0",
-    "just-login-emailer": "^1.1.0",
+    "just-login-emailer": "^2.0.0",
     "just-login-example-session-manager": "^1.2.0",
     "just-login-session-state": "^1.0.0",
     "level": "^1.2.0",
@@ -52,7 +52,7 @@
     "got": "^3.3.1",
     "level-mem": "^0.18.0",
     "tape": "^4.0.0",
-	"uglify-js": "^2.4.23",
+    "uglify-js": "^2.4.23",
     "watchify": "^3.2.3",
     "xtend": "^4.0.0"
   }
