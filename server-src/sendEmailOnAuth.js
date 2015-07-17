@@ -18,7 +18,7 @@ module.exports = function(core, baseUrl) {
 
 	var emailer = JustLoginEmailer(core, {
 		createHtmlEmail: htmlEmail,
-		transport: config.email,
+		transport: config.email || {},
 		mail: {
 			subject: config.emailSubject
 		}
