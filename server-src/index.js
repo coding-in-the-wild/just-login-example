@@ -9,30 +9,32 @@ var Routing = require('./routing.js')
 var JustLoginCore = require('just-login-core')
 var justLoginSessionState = require('just-login-session-state')
 var justLoginDebouncer = require('just-login-debouncer')
-var JustLoginExampleSessionManager = require('just-login-example-session-manager')
-
 var spaces = require('level-spaces')
 
-var config = require('confuse')().justLogin
-var BASE_URL = require('url').resolve(config.baseUrl, config.endpoints.token)
+var config = require('../config.json')
+var BASE_URL = config.domain + ':' + config.port + config.endpoints.token
 var DNODE_ENDPOINT =  config.endpoints.dnode
 var CUSTOM_ENDPOINT = config.endpoints.custom
 
-module.exports = function createServer(db, baseUrl) {
+module.exports = function createServer(db) {
 	if (!db) throw new Error('Must provide a levelup database')
 
 	var core = JustLoginCore(spaces(db, 'core'))
 	justLoginDebouncer(core, spaces(db, 'debouncing'))
-	justLoginSessionState(core, db) // uses spaces internally
-	var sessionManager = JustLoginExampleSessionManager(core, spaces(db, 'sess-exp'))
+	var sessionState = justLoginSessionState(core, db) // uses spaces internally
+	var clientApi = {
+		beginAuthentication: core.beginAuthentication, //.bind(null, sessionId),
+		isAuthenticated: sessionState.isAuthenticated, //.bind(null, sessionId),
+		unauthenticate: sessionState.unauthenticate //.bind(null, sessionId)
+	}
 	var incrementCountApi = IncrementCountApi(core, db) // uses spaces internally
 
-	sendEmailOnAuth(core, baseUrl || BASE_URL)
+	sendEmailOnAuth(core, BASE_URL)
 
 	var server = http.createServer(Routing(core))
 
 	shoe(function (stream) { //Basic authentication api
-		var d = dnode(sessionManager)
+		var d = dnode(clientApi)
 		d.pipe(stream).pipe(d)
 	}).install(server, DNODE_ENDPOINT)
 

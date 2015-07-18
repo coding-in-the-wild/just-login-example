@@ -2,7 +2,7 @@ var url = require('url')
 var ecstatic = require('ecstatic')
 require('string.prototype.startswith')
 
-var config = require('confuse')().justLogin
+var config = require('../config.json')
 var serve = ecstatic({
 	root: config.staticDir
 })

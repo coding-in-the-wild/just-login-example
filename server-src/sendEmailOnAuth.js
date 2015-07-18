@@ -3,7 +3,8 @@ var compile = require('string-template/compile')
 var formatUrl = require('url').format
 var fs = require('fs')
 var path = require('path')
-var config = require('confuse')().justLogin
+var config = require('../config.json')
+var transportConfig = require('./transport-config.json')
 
 var emailTemplate = fs.readFileSync(path.resolve(__dirname, 'emailTemplate.html'), 'utf8')
 emailTemplate = compile(emailTemplate)
@@ -18,10 +19,8 @@ module.exports = function(core, baseUrl) {
 
 	var emailer = JustLoginEmailer(core, {
 		createHtmlEmail: htmlEmail,
-		transport: config.email || {},
-		mail: {
-			subject: config.emailSubject
-		}
+		transport: transportConfig,
+		mail: { subject: config.emailSubject }
 	})
 
 	emailer.on('error', function (err) {

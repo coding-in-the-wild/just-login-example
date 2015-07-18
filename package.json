@@ -26,7 +26,6 @@
     "poststart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node build/putInfoIntoHtml.js"
   },
   "dependencies": {
-    "confuse": "0.0.1",
     "dnode": "^1.2.0",
     "domready": "^1.0.5",
     "ecstatic": "^0.8.0",
@@ -41,7 +40,7 @@
     "level-spaces": "^2.0.0",
     "ms": "^0.7.1",
     "ractive": "^0.7.3",
-    "run-waterfall": "^1.0.0",
+    "run-waterfall": "^1.1.2",
     "shoe": "0.0.15",
     "string-template": "^0.2.1",
     "string.prototype.startswith": "^0.2.0"

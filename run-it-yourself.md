@@ -9,12 +9,10 @@ Open an issue if you have trouble with these steps.
 	- Note, if you use gmail, you will have to enable [less secure apps](https://support.google.com/accounts/answer/6010255?hl=en)
 ```json
 {
-  "justLogin": {
-    "email": {
-      "auth": {
-        "user": "YOUR EMAIL HERE",
-        "pass": "YOUR PASSWORD HERE"
-      }
+  "email": {
+     "auth": {
+      "user": "YOUR EMAIL HERE",
+      "pass": "YOUR PASSWORD HERE"
     }
   }
 }

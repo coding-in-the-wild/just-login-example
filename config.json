@@ -1,13 +1,11 @@
 {
-  "justLogin": {
     "port": 80,
-    "baseUrl": "http://localhost",
+    "domain": "localhost",
     "emailSubject": "Login to this site!",
     "endpoints": {
-      "dnode": "/dnode-justlogin",
-      "custom": "/dnode-custom",
-      "token": "/magical-login"
+        "dnode": "/dnode-justlogin",
+        "custom": "/dnode-custom",
+        "token": "/magical-login"
     },
     "staticDir": "./static/"
-  }
 }

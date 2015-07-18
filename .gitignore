@@ -16,3 +16,6 @@ repo/*
 
 # run with 'nohup' command on linux
 nohup.out
+
+# private
+server-src/transport-config.json
