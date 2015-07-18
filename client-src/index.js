@@ -6,19 +6,32 @@ var Shoe = require('shoe')
 var Dnode = require('dnode')
 var ms = require('ms')
 var waterfall = require('run-waterfall')
-
-var config = require('../config.json').justLogin //cannot require('confuse')() in client, b/c no fs module
-var DNODE_ENDPOINT =  config.endpoints.dnode
-var CUSTOM_ENDPOINT = config.endpoints.custom
+var endpoints = require('../config.json').endpoints
 
 domready(function() {
 	var emailView = EmailView()
 	var statusView = StatusView()
 
-	waterfall([ custom, createSession, attachListeners ])
+	emailView.on('badEmail', function (emailAddress) {
+		statusView.emit('badEmail', emailAddress)
+	})
+
+	function setLoggedInStatus(name) {
+		if (name) {
+			statusView.emit('authenticated', name)
+			emailView.emit('authenticated', name)
+		} else {
+			statusView.emit('notAuthenticated')
+			emailView.emit('notAuthenticated')
+		}
+	}
+
+	waterfall([ custom, createSession, attachListeners ], function (err) {
+		throw err
+	})
 
 	function custom(cb) {
-		var stream = Shoe(CUSTOM_ENDPOINT)
+		var stream = Shoe(endpoints.custom)
 		var d = Dnode()
 		d.on('remote', function (customApi) {
 			cb(null, customApi.incrementCounterIfAuthed)
@@ -26,32 +39,28 @@ domready(function() {
 		d.pipe(stream).pipe(d)
 	}
 
-	function createSession(incrementCounterIfAuthed, cb) {
-		var session = justLoginClient(DNODE_ENDPOINT, function(err, jlApi, sessionId) {
-			function loggedInNow(name) {
-				statusView.emit('authenticated', name)
-				emailView.emit('authenticated', name)
-
-				statusView.on('check', function() {
-					incrementCounterIfAuthed(sessionId, function(err, counts) {
-						if (err || typeof counts !== 'object') {
-							statusView.emit('notAuthenticated')
-							emailView.emit('notAuthenticated')
-						} else {
-							statusView.emit('countUpdated', counts)
-						}
-					})
+	function createSession(increment, cb) {
+		var session = justLoginClient(endpoints.dnode, function(err, jlApi, sessionId) {
+			statusView.on('check', function() {
+				increment(sessionId, function(err, counts) {
+					if (err || typeof counts !== 'object') {
+						setLoggedInStatus(false)
+					} else {
+						statusView.emit('countUpdated', counts)
+					}
 				})
-			}
-			cb(null, session, jlApi, loggedInNow)
+			})
+
+			cb(err, jlApi)
 		})
+		session.on('authenticated', setLoggedInStatus)
 	}
 
-	function attachListeners(session, jlApi, loggedInNow) {
+	function attachListeners(jlApi) {
+		emailView.on('logout', jlApi.unauthenticate)
+
 		jlApi.isAuthenticated(function (err, name) { //checks if is authenticated when page opens
-			if (!err && name) {
-				loggedInNow(name)
-			}
+			setLoggedInStatus(name)
 		})
 
 		emailView.on('login', function (emailAddress) {
@@ -62,20 +71,6 @@ domready(function() {
 					statusView.emit('debounce', message)
 				}
 			})
-		})
-
-		emailView.on('badEmail', function (emailAddress) {
-			statusView.emit('badEmail', emailAddress)
-		})
-
-		emailView.on('logout', function (name) {
-			jlApi.unauthenticate(name)
-		})
-
-		session.on('session', function (sessionInfo) {})
-
-		session.on('authenticated', function (name) {
-			loggedInNow(name)
 		})
 	}
 })
