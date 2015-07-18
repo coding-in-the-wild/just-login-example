@@ -4,7 +4,7 @@ var formatUrl = require('url').format
 var fs = require('fs')
 var path = require('path')
 var config = require('../config.json')
-var transportConfig = require('./transport-config.json')
+var transportConfig = process.env.CI ? {} : require('./transport-config.json')
 
 var emailTemplate = fs.readFileSync(path.resolve(__dirname, 'emailTemplate.html'), 'utf8')
 emailTemplate = compile(emailTemplate)
