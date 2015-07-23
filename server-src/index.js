@@ -23,6 +23,8 @@ module.exports = function createServer(db) {
 	justLoginDebouncer(core, spaces(db, 'debouncing'))
 	var sessionState = justLoginSessionState(core, db) // uses spaces internally
 	var clientApi = {
+		createSession: sessionState.createSession, //.bind(null, sessionId),
+		sessionExists: sessionState.sessionExists, //.bind(null, sessionId),
 		beginAuthentication: core.beginAuthentication, //.bind(null, sessionId),
 		isAuthenticated: sessionState.isAuthenticated, //.bind(null, sessionId),
 		unauthenticate: sessionState.unauthenticate //.bind(null, sessionId)
