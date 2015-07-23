@@ -20,7 +20,6 @@
 - [just-login-client](https://github.com/coding-in-the-wild/just-login-client)
 - [just-login-debouncer](https://github.com/coding-in-the-wild/just-login-debouncer)
 - [just-login-emailer](https://github.com/coding-in-the-wild/just-login-emailer)
-- [just-login-example-session-manager](https://github.com/coding-in-the-wild/just-login-example-session-manager)
 
 # License
 
