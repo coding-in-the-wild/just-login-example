@@ -17,8 +17,7 @@ module.exports = function (core) {
 			core.authenticate(token, function (err, addr) {
 				var pathname = err ? '/loginFailure.html' : '/loginSuccess.html'
 
-				res.statusCode = 307
-				res.setHeader('Location', url.resolve(req.url, pathname))
+				res.writeHead(307, { Location: url.resolve(req.url, pathname) })
 				res.end()
 			})
 		} else {
