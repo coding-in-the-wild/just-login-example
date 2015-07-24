@@ -1,3 +1,5 @@
+var dnode = require('dnode')
+var shoe = require('shoe')
 var spaces = require('level-spaces')
 
 function cbIfErr(onErr, noErr) {
@@ -9,48 +11,47 @@ function cbIfErr(onErr, noErr) {
 
 function incrementCount(db, key, cb) {
 	db.get(key, function(err, value) {
-		var count
-		if (err && err.notFound) {
-			count = 0
-		} else if (err) {
-			return cb(err)
+		if (err && !err.notFound) {
+			cb(err)
 		} else {
-			count = parseInt(value)
-		}
+			var count = Number(value)
+			if (isNaN(count)) count = 0
+			count++
 
-		if (isNaN(count)) {
-			count = 1
-		} else {
-			count = count + 1
+			db.put(key, count, function(err) {
+				cb(err, !err && count)
+			})
 		}
-		db.put(key, count, function(err) {
-			cb(err, count)
-		})
 	})
 }
 
+function incrementCounterIfAuthed(jlc, db) {
+	var globalCountDb = spaces(db, 'global-click-counting')
+	var sessionCountDb = spaces(db, 'session-click-counting')
 
-var incrementCounterIfAuthed = function(jlc, globalCountDb, sessionCountDb, sessionId, cb) {
-	jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
-		if ((err && err.notFound) || !name) { //not authenticated
-			cb(new Error('Not Authenticated'))
-		} else { //authenticated
-			incrementCount(globalCountDb, name, cbIfErr(cb, function (err, globalCount) {
-				incrementCount(sessionCountDb, sessionId, cbIfErr(cb, function (err, sessionCount) {
-					cb(null, {
-						globalCount: globalCount,
-						sessionCount: sessionCount
-					})
+	return function icia(sessionId, cb) {
+		jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
+			if ((err && err.notFound) || !name) { //not authenticated
+				cb(new Error('Not Authenticated'))
+			} else { //authenticated
+				incrementCount(globalCountDb, name, cbIfErr(cb, function (err, globalCount) {
+					incrementCount(sessionCountDb, sessionId, cbIfErr(cb, function (err, sessionCount) {
+						cb(null, {
+							globalCount: globalCount,
+							sessionCount: sessionCount
+						})
+					}))
 				}))
-			}))
-		}
-	}))
+			}
+		}))
+	}
 }
 
 module.exports = function (jlc, db) {
-	var globalCountDb = spaces(db, 'global-click-counting')
-	var sessionCountDb = spaces(db, 'session-click-counting')
-	return { //incrementCounterIfAuthed() takes a sessionId and callback
-		incrementCounterIfAuthed: incrementCounterIfAuthed.bind(null, jlc, globalCountDb, sessionCountDb)
-	}
+	return shoe(function (stream) {
+		var d = dnode({
+			incrementCounterIfAuthed: incrementCounterIfAuthed(jlc, db)
+		})
+		d.pipe(stream).pipe(d)
+	})
 }

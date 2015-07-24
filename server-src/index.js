@@ -1,13 +1,12 @@
 //Server
 var http = require('http')
-var dnode = require('dnode')
-var shoe = require('shoe')
 var IncrementCountApi = require('./incrementCountApi.js')
 var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var Routing = require('./routing.js')
 //Just Login
 var JustLoginCore = require('just-login-core')
-var justLoginSessionState = require('just-login-session-state')
+var justLoginClient = require('just-login-client')
+var JustLoginSessionState = require('just-login-session-state')
 var justLoginDebouncer = require('just-login-debouncer')
 var spaces = require('level-spaces')
 
@@ -21,29 +20,15 @@ module.exports = function createServer(db) {
 
 	var core = JustLoginCore(spaces(db, 'core'))
 	justLoginDebouncer(core, spaces(db, 'debouncing'))
-	var sessionState = justLoginSessionState(core, db) // uses spaces internally
-	var clientApi = {
-		createSession: sessionState.createSession, //.bind(null, sessionId),
-		sessionExists: sessionState.sessionExists, //.bind(null, sessionId),
-		beginAuthentication: core.beginAuthentication, //.bind(null, sessionId),
-		isAuthenticated: sessionState.isAuthenticated, //.bind(null, sessionId),
-		unauthenticate: sessionState.unauthenticate //.bind(null, sessionId)
-	}
-	var incrementCountApi = IncrementCountApi(core, db) // uses spaces internally
-
 	sendEmailOnAuth(core, BASE_URL)
 
+	var sessionState = JustLoginSessionState(core, db) // uses spaces internally
+	var increment = IncrementCountApi(core, db) // uses spaces internally
+	var client = justLoginClient(core, sessionState)
 	var server = http.createServer(Routing(core))
 
-	shoe(function (stream) { //Basic authentication api
-		var d = dnode(clientApi)
-		d.pipe(stream).pipe(d)
-	}).install(server, DNODE_ENDPOINT)
-
-	shoe(function (stream) { //Custom api, in this case, the count incrementer
-		var d = dnode(incrementCountApi)
-		d.pipe(stream).pipe(d)
-	}).install(server, CUSTOM_ENDPOINT)
+	client.install(server, DNODE_ENDPOINT)
+	increment.install(server, CUSTOM_ENDPOINT)
 
 	return server
 }
