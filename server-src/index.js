@@ -23,7 +23,7 @@ module.exports = function createServer(db) {
 	sendEmailOnAuth(core, BASE_URL)
 
 	var sessionState = JustLoginSessionState(core, db) // uses spaces internally
-	var increment = IncrementCountApi(core, db) // uses spaces internally
+	var increment = IncrementCountApi(sessionState, db) // uses spaces internally
 	var client = justLoginClient(core, sessionState)
 	var server = http.createServer(Routing(core))
 

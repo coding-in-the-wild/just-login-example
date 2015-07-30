@@ -25,12 +25,12 @@ function incrementCount(db, key, cb) {
 	})
 }
 
-function incrementCounterIfAuthed(jlc, db) {
+function incrementCounterIfAuthed(sessionState, db) {
 	var globalCountDb = spaces(db, 'global-click-counting')
 	var sessionCountDb = spaces(db, 'session-click-counting')
 
 	return function icia(sessionId, cb) {
-		jlc.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
+		sessionState.isAuthenticated(sessionId, cbIfErr(cb, function (err, name) {
 			if ((err && err.notFound) || !name) { //not authenticated
 				cb(new Error('Not Authenticated'))
 			} else { //authenticated
@@ -47,10 +47,10 @@ function incrementCounterIfAuthed(jlc, db) {
 	}
 }
 
-module.exports = function (jlc, db) {
+module.exports = function (sessionState, db) {
 	return shoe(function (stream) {
 		var d = dnode({
-			incrementCounterIfAuthed: incrementCounterIfAuthed(jlc, db)
+			incrementCounterIfAuthed: incrementCounterIfAuthed(sessionState, db)
 		})
 		d.pipe(stream).pipe(d)
 	})
