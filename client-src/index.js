@@ -2,8 +2,8 @@ var justLoginClient = require('just-login-client')
 var EmailView = require('./email-view')
 var StatusView = require('./status-view')
 var domready = require('domready')
-var Shoe = require('shoe')
-var Dnode = require('dnode')
+var shoe = require('shoe')
+var dnode = require('dnode')
 var ms = require('ms')
 var waterfall = require('run-waterfall')
 var endpoints = require('../config.json').endpoints
@@ -31,8 +31,8 @@ domready(function() {
 	})
 
 	function custom(cb) {
-		var stream = Shoe(endpoints.custom)
-		var d = Dnode()
+		var stream = shoe(endpoints.custom)
+		var d = dnode()
 		d.on('remote', function (customApi) {
 			cb(null, customApi.incrementCounterIfAuthed)
 		})
