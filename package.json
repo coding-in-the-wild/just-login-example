@@ -21,8 +21,8 @@
     "test": "node test/test.js",
     "build": "browserify client-src/index.js -d -o static/build.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "start": "nohup node . 1028 &",
-    "stop": "kill $(ps x | awk '/node \\. 1028/ {print $1}') || echo ''",
+    "start": "psy start -n justlogin -- node . 1028",
+    "stop": "psy stop justlogin",
     "poststart": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node build/putInfoIntoHtml.js"
   },
   "dependencies": {
@@ -50,6 +50,7 @@
     "brucedown": "^1.1.0",
     "got": "^3.3.1",
     "level-mem": "^0.18.0",
+    "psy": "^1.4.5",
     "tape": "^4.0.0",
     "uglify-js": "^2.4.23",
     "watchify": "^3.2.3",
