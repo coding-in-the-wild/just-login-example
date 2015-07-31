@@ -1,6 +1,6 @@
 {
     "port": 80,
-    "domain": "localhost",
+    "domain": "justlogin.xyz",
     "emailSubject": "Login to this site!",
     "endpoints": {
         "dnode": "/dnode-justlogin",
