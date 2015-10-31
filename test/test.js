@@ -4,7 +4,7 @@ var level = require('level-mem')
 var got = require('got')
 
 function makeServer(t, cb) {
-	var port = ~~(Math.random() * 1000) + 1024
+	var port = Math.floor(Math.random() * 1000) + 1024
 	var server = new Server(level())
 
 	function end() {

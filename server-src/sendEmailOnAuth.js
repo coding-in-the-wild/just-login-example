@@ -1,6 +1,5 @@
 var JustLoginEmailer = require('just-login-emailer')
 var stCompile = require('string-template/compile')
-var formatUrl = require('url').format
 var fs = require('fs')
 var path = require('path')
 var config = require('../config.json')
