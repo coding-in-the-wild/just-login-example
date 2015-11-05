@@ -1,6 +1,6 @@
 # Documentation
 
-Just Login is an authentication system for [node.js][node]. The modules can be installed using [npm][npm], which is shipped with node.js.
+Just Login is an password-less authentication system for [node.js][node]. The modules can be installed using [npm][npm], which is shipped with node.js.
 
 Just Login is a modular system. You'll definitely need the `just-login-core`. Want sessions? You'll need `just-login-session-state`. Want emailing? You'll need the `just-login-emailer`.
 
@@ -11,8 +11,8 @@ Handles tokens for Just Login. The core needs a [levelup][levelup] database, thi
 To install: `npm install just-login-core level`
 
 ```js
-var database = require('level')('./databases/core')
-var core = require('just-login-core')(database)
+var coreDb = require('level')('./databases/core')
+var core = require('just-login-core')(coreDb)
 ```
 
 `core` is an event emitter with functions as properties.
@@ -23,33 +23,56 @@ Starts the authentication process by emitting the 'authentication initiated' eve
 
 - `sessionId` is a string of the session id that is trying to get authenticated.
 - `contactAddress` is string of the user's contact info, (usually an email address).
-- `cb(err, loginRequest)`
+- `cb(err, authReqInfo)`
 	- `err` is null or an Error object.
-	- `loginRequest` is an object with the authentication request information. The object is identical to the object emitted in the event, with the following properties:
+	- `authReqInfo` is an object with the authentication request information. The object is identical to the object emitted in the `'authentication initiated'` event, with the following properties:
 		- `token` is a string of the token.
 		- `contactAddress` is a string with the contact address.
+
+Emits `core.on('authentication initiated', function (authReqInfo) { ... })`
 
 ### `core.authenticate(token, cb)`
 
 Authenticates the session id associated with a given token.
 
 - `token` is a string of the token that is trying to get authenticated.
-- `cb(err, contactAddress)`
+- `cb(err, credentials)`
 	- `err` is null or an Error object.
-	- `contactAddress` is null is the user is not authenticated, and is a string of their contact address if they are authenticated.
+	- `credentials` is null is the user is not authenticated, and is an object if they are authenticated:
+		- `contactAddress` is a string of their contact address.
+		- `sessionId` is a string of their session id.
+
+Emits `core.on('authenticated', function (credentials) { ... })`
 
 ```js
 var url = require('url')
 
 var token = url.parse(req.url, true).query.token
 core.authenticate(token, function (err, addr) {
-	if (err || !addr) { //Bad token, and other errors
-		//serve the login failure page
+	if (err || !addr) { // Bad token, and other errors
+		// Serve the login failure page
 	} else {
-		//serve the login success page
+		// Serve the login success page
 	}
 })
 ```
+
+## Not using Email
+
+This is the point where you must send the token to the user somehow. Here is an example of using twitter's direct messaging instead of email!
+
+```js
+core.on('authentication initiated', function (authReqInfo) {
+	var screenName = authReqInfo.contactAddress
+
+	twitterClient.post('direct_messages/new.json', {
+		screen_name: screenName,
+		text: 'Hey ' + screenName + ',\nTo login to my awesome site, click here: http://example.com/login?token=' + authReqInfo.token
+	}, function (err) {})
+})
+```
+
+If you use the `just-login-emailer`, it will listen for this event so you don't have to!
 
 ## `just-login-emailer`
 
@@ -64,13 +87,13 @@ function htmlEmail(token) {
 	return 'Click ' + ('here'.link('http://example.com/login?token=' + token)) + ' to login like a boss.'
 }
 
-var transportOptions = { //if using gmail's sending server
-	host: "smtp.gmail.com",
+var transportOptions = { // If using gmail's sending server
+	host: 'smtp.gmail.com',
 	port: 465,
 	secure: true,
 	auth: {
-		user: "justloginexample@gmail.com",
-		pass: "whatever the password is"
+		user: 'justloginexample@gmail.com',
+		pass: 'whatever the password is'
 	}
 }
 
@@ -84,18 +107,6 @@ JustLoginEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) 
 })
 ```
 
-## Not using Email
-
-Don't want to use email? Use this bit of code to listen for login requests:
-
-```js
-core.on('authentication initiated', function (loginRequest) {
-	console.log(loginRequest.contactAddress + ' has ' + loginRequest.token + ' as their token.')
-})
-```
-
-This is the point where you must send the token to the user somehow. (If you use the `just-login-emailer`, it will listen for this event so you don't have to!)
-
 ## `just-login-session-state`
 
 Session state handler for Just Login. See [full documentation][snse].
@@ -103,7 +114,8 @@ Session state handler for Just Login. See [full documentation][snse].
 To install: `npm install just-login-session-state`
 
 ```js
-var sessionState = require('just-login-session-state')(core, db, [options])
+var sessionStateDb = require('level')('./databases/session-state')
+var sessionState = require('just-login-session-state')(core, sessionStateDb, [options])
 ```
 
 ### `sessionState.createSession(cb)`
@@ -121,7 +133,7 @@ Checks if a session exists or not.
 - `sessionId` is a string of the session id in question.
 - `cb(err, date)`
 	- `err` is null or an Error object.
-	- `date` is null if the session is unauthenticated. Otherwise it is a date object.
+	- `date` is null if the session is unauthenticated. Otherwise it is a Date object of when the session was created.
 
 ### `sessionState.deleteSession(sessionId, cb)`
 
@@ -154,7 +166,7 @@ To install: `npm install just-login-debouncer`
 
 ```js
 var debounceDb = level('./databases/debouncer')
-require('just-login-debouncer')(core, debounceDb) //Modifies the core
+require('just-login-debouncer')(core, debounceDb) // Modifies the core
 ```
 
 
@@ -166,5 +178,5 @@ require('just-login-debouncer')(core, debounceDb) //Modifies the core
 [dnode]: https://github.com/substack/dnode
 [levelup]: https://github.com/rvagg/node-levelup
 [level]: https://github.com/rvagg/node-levelup
-[node]: http://nodejs.org/download
+[node]: https://nodejs.org/en/download/
 [npm]: http://npmjs.org
