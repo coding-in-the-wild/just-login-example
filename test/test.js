@@ -84,4 +84,5 @@ test('server re-routes for token', function (t) { //does stuff when magic token
 
 test('config is not in dev mode', function (t) {
 	t.ok(require('../config.json').domain, 'justlogin.xyz')
+	t.end()
 })
