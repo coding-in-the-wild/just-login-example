@@ -5,7 +5,7 @@ var sendEmailOnAuth = require('./sendEmailOnAuth.js')
 var Routing = require('./routing.js')
 //Just Login
 var JustLoginCore = require('just-login-core')
-var justLoginClient = require('just-login-client')
+var justLoginClient = require('justlogin.xyz-client')
 var JustLoginSessionState = require('just-login-session-state')
 var justLoginDebouncer = require('just-login-debouncer')
 var spaces = require('level-spaces')

@@ -29,7 +29,7 @@
     "domready": "^1.0.5",
     "ecstatic": "^1.1.3",
     "email-validator": "^1.0.1",
-    "just-login-client": "^2.0.1",
+    "justlogin.xyz-client": "^2.0.2",
     "just-login-core": "^2.0.1",
     "just-login-debouncer": "^1.3.0",
     "just-login-emailer": "^2.0.0",

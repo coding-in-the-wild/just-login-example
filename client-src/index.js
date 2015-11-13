@@ -1,4 +1,4 @@
-var justLoginClient = require('just-login-client')
+var justLoginClient = require('justlogin.xyz-client')
 var EmailView = require('./email-view')
 var StatusView = require('./status-view')
 var domready = require('domready')
