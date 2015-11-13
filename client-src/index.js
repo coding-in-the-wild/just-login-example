@@ -16,9 +16,9 @@ domready(function() {
 		statusView.emit('badEmail', emailAddress)
 	})
 
-	function onLogin(name) {
-		statusView.emit('authenticated', name)
-		emailView.emit('authenticated', name)
+	function onLogin(emailAddress) {
+		statusView.emit('authenticated', emailAddress)
+		emailView.emit('authenticated', emailAddress)
 	}
 	function onLogout() {
 		statusView.emit('notAuthenticated')
@@ -58,8 +58,8 @@ domready(function() {
 	function attachListeners(jlApi) {
 		emailView.on('logout', jlApi.unauthenticate)
 
-		jlApi.isAuthenticated(function (err, name) { //checks if is authenticated when page opens
-			if (name) onLogin(name)
+		jlApi.isAuthenticated(function (err, emailAddress) { //checks if is authenticated when page opens
+			if (emailAddress) onLogin(emailAddress)
 		})
 
 		emailView.on('login', function (emailAddress) {
