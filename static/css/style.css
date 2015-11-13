@@ -9,3 +9,8 @@
 #email-view button {
 	width: 100%;
 }
+
+h2 code, h3 code {
+	font-size: inherit;
+	white-space: inherit;
+}
