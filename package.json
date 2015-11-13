@@ -22,7 +22,7 @@
     "build": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node build/putInfoIntoHtml.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
     "start": "psy start -n justlogin -- node . 1028",
-    "stop": "psy stop justlogin"
+    "stop": "psy stop justlogin || true"
   },
   "dependencies": {
     "dnode": "^1.2.0",
