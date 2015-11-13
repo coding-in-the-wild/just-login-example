@@ -15,12 +15,21 @@
 	<div class="container">
 		<div class="row">
 			<div class="jumbotron col-sm-offset-2 col-sm-8">
-				<h1>Success!</h1>
-				<p style=" text-indent: 2em;">
-					<a href="/">Clicky clicky here</a>
-				</p>
+				<h1>You've logged in!</h1>
+				<p><a href="/">Click here</a> to go to the main screen.</p>
+				<p>This window will close in <span id="count">5 seconds</span>.</p>
 			</div>
 		</div>
 	</div>
+	<script>
+		var seconds = 5
+
+		function updateView() {
+			document.querySelector('#count').innerHTML = seconds + ' second' + (seconds === 1 ? '' : 's')
+			if (seconds-- <= 0) window.close()
+		}
+		setInterval(updateView, 1000)
+		updateView()
+	</script>
 </body>
 </html>
