@@ -8,7 +8,6 @@
 	<title>Just Login</title>
 
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="css/darkly.css" />
 	<link rel="stylesheet" href="css/style.css" />
 	<link rel="stylesheet" href="css/markdown-style.css" />
 </head>
@@ -32,7 +31,7 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="jumbotron col-sm-offset-2 col-sm-8">
+			<div class="jumbotron col-md-offset-2 col-md-8">
 				<h1>Just Login</h1>
 				<p>
 					A JavaScript library so that people can log in to your site with just their email address and you don't have to re-implement password storage.  YESSSSSS
@@ -41,13 +40,19 @@
 		</div>
 
 		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-md-6">
 				<div id="email-view" class="well well-lg">
 				</div>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-md-6">
 				<div id="status-view">
 				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="well well-lg col-md-10 col-md-offset-1">
+				<!--DOCUMENTATION_GOES_HERE-->
 			</div>
 		</div>
 	</div>
@@ -143,16 +148,6 @@
 		{{/if}}
 	</script>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-10 col-sm-offset-1">
-				<div class="well well-lg">
-					<!--DOCUMENTATION_GOES_HERE-->
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<script src="build.js"></script>
- </body>
- </html>
+</body>
+</html>
