@@ -59,7 +59,7 @@ core.authenticate(token, function (err, addr) {
 
 ## Not using Email
 
-You must send the token to the user somehow. One way is to send them a link with the token in it, and authenticate tokens sent to that endpoint.
+You must send the token to the user somehow. One way is to send them a link with the token in it, and have the server authenticate the token when that url is visited.
 
 Here is an example of using the [`twitter` module](https://www.npmjs.com/package/twitter) to direct message a link to a user:
 
