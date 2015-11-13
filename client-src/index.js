@@ -16,14 +16,13 @@ domready(function() {
 		statusView.emit('badEmail', emailAddress)
 	})
 
-	function setLoggedInStatus(name) {
-		if (name) {
-			statusView.emit('authenticated', name)
-			emailView.emit('authenticated', name)
-		} else {
-			statusView.emit('notAuthenticated')
-			emailView.emit('notAuthenticated')
-		}
+	function onLogin(name) {
+		statusView.emit('authenticated', name)
+		emailView.emit('authenticated', name)
+	}
+	function onLogout() {
+		statusView.emit('notAuthenticated')
+		emailView.emit('notAuthenticated')
 	}
 
 	waterfall([ custom, createSession, attachListeners ], function (err) {
@@ -44,7 +43,7 @@ domready(function() {
 			statusView.on('check', function() {
 				increment(sessionId, function(err, counts) {
 					if (err || typeof counts !== 'object') {
-						setLoggedInStatus(false)
+						onLogout()
 					} else {
 						statusView.emit('countUpdated', counts)
 					}
@@ -53,14 +52,14 @@ domready(function() {
 
 			cb(err, jlApi)
 		})
-		session.on('authenticated', setLoggedInStatus)
+		session.on('authenticated', onLogin)
 	}
 
 	function attachListeners(jlApi) {
 		emailView.on('logout', jlApi.unauthenticate)
 
 		jlApi.isAuthenticated(function (err, name) { //checks if is authenticated when page opens
-			setLoggedInStatus(name)
+			if (name) onLogin(name)
 		})
 
 		emailView.on('login', function (emailAddress) {
