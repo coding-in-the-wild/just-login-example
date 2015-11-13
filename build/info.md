@@ -2,11 +2,11 @@
 
 Just Login is an password-less authentication system for [node.js][node]. The modules can be installed using [npm][npm], which is shipped with node.js.
 
-Just Login is a modular system. You'll definitely need the `just-login-core`. Want sessions? You'll need `just-login-session-state`. Want emailing? You'll need the `just-login-emailer`.
+Just Login is a modular system. You'll definitely need the [`just-login-core`][jlc]. Want sessions? You'll need [`just-login-session-state`][jlss]. Want emailing? You'll need the [`just-login-emailer`][jle].
 
-## `just-login-core`
+## [`just-login-core`][jlc]
 
-Handles tokens for Just Login. The core needs a [levelup][levelup] database, this example uses [level][level]. See [full documentation][core].
+Handles tokens for Just Login. The core needs a [levelup][levelup] database, this example uses [level][level].
 
 To install: `npm install just-login-core level`
 
@@ -15,11 +15,11 @@ var coreDb = require('level')('./databases/core')
 var core = require('just-login-core')(coreDb)
 ```
 
-`core` is an event emitter with functions as properties.
+`core` is an event emitter with these functions as properties:
 
 ### `core.beginAuthentication(sessionId, contactAddress, cb)`
 
-Starts the authentication process by emitting the 'authentication initiated' event with a token and the contact address. Something needs to catch the event, send an email with the token to the address. Feel free to try the [Just Login Emailer][emlr].
+Starts the authentication process by emitting the 'authentication initiated' event with a token and the contact address. Something needs to catch the event, send an email with the token to the address. Feel free to try the [Just Login Emailer][jle].
 
 - `sessionId` is a string of the session id that is trying to get authenticated.
 - `contactAddress` is string of the user's contact info, (usually an email address).
@@ -59,24 +59,46 @@ core.authenticate(token, function (err, addr) {
 
 ## Not using Email
 
-This is the point where you must send the token to the user somehow. Here is an example of using twitter's direct messaging instead of email!
+You must send the token to the user somehow. One way is to send them a link with the token in it, and have the server authenticate the token when that url is visited.
+
+Here is an example of using the [`twitter` module](https://www.npmjs.com/package/twitter) to direct message a link to a user:
 
 ```js
+var client = new Twitter({ ... })
+
 core.on('authentication initiated', function (authReqInfo) {
 	var screenName = authReqInfo.contactAddress
 
-	twitterClient.post('direct_messages/new.json', {
+	client.post('direct_messages/new.json', {
+		// You'll need users to login with twitter usernames instead of email addresses
 		screen_name: screenName,
-		text: 'Hey ' + screenName + ',\nTo login to my awesome site, click here: http://example.com/login?token=' + authReqInfo.token
+		text: 'Hey ' + screenName + ',\n' +
+		'To login to my awesome site, click here: ' +
+		'http://example.com/login?token=' + authReqInfo.token
 	}, function (err) {})
+})
+```
+
+Here is an example of using the [`twilio` module](https://www.npmjs.com/package/twilio) to text a link to a user:
+
+```js
+var client = require('twilio')('ACCOUNT_SID', 'AUTH_TOKEN');
+
+core.on('authentication initiated', function (authReqInfo) {
+	client.sendMessage({
+		// You'll need users to login with phone numbers instead of email addresses
+		to: authReqInfo.contactAddress,
+		from: '+14506667788',
+		body: authReqInfo.token
+	}, function(err, responseObj) {})
 })
 ```
 
 If you use the `just-login-emailer`, it will listen for this event so you don't have to!
 
-## `just-login-emailer`
+## [`just-login-emailer`][jle]
 
-Sends emails to folks who want to log in! You have to send the token to the user somehow. If you plan to use email, check out the example below. See [full documentation][emlr].
+Sends emails to folks who want to log in! You have to send the token to the user somehow. If you plan to use email, check out the example below.
 
 To install: `npm install just-login-emailer`
 
@@ -107,9 +129,9 @@ JustLoginEmailer(core, htmlEmail, transportOptions, mailOptions, function (err) 
 })
 ```
 
-## `just-login-session-state`
+## [`just-login-session-state`][jlss]
 
-Session state handler for Just Login. See [full documentation][snse].
+Session state handler for Just Login.
 
 To install: `npm install just-login-session-state`
 
@@ -158,9 +180,9 @@ Checks if a user is authenticated.
 - `cb(err)`
 	- `err` is null or an Error object.
 
-## `just-login-debouncer`
+## [`just-login-debouncer`][jld]
 
-Keep jerks from sending lots of login emails. Basically this will rate-limit `core.beginAuthentication()`. See [full documentation][dbnc].
+Keep jerks from sending lots of login emails. Basically this will rate-limit `core.beginAuthentication()`.
 
 To install: `npm install just-login-debouncer`
 
@@ -170,12 +192,10 @@ require('just-login-debouncer')(core, debounceDb) // Modifies the core
 ```
 
 
-[core]: https://github.com/coding-in-the-wild/just-login-core
-[dbnc]: https://github.com/coding-in-the-wild/just-login-debouncer
-[snse]: https://github.com/coding-in-the-wild/just-login-session-state
-[clnt]: https://github.com/coding-in-the-wild/just-login-client
-[emlr]: https://github.com/coding-in-the-wild/just-login-emailer
-[dnode]: https://github.com/substack/dnode
+[jlc]: https://github.com/coding-in-the-wild/just-login-core
+[jld]: https://github.com/coding-in-the-wild/just-login-debouncer
+[jlss]: https://github.com/coding-in-the-wild/just-login-session-state
+[jle]: https://github.com/coding-in-the-wild/just-login-emailer
 [levelup]: https://github.com/rvagg/node-levelup
 [level]: https://github.com/rvagg/node-levelup
 [node]: https://nodejs.org/en/download/
