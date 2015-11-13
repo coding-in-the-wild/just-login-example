@@ -12,7 +12,9 @@ module.exports = function(core, baseUrl) {
 	function htmlEmail(loginToken) {
 		return emailTemplate({
 			baseUrl: baseUrl,
-			token: loginToken
+			token: loginToken,
+			date: new Date().toDateString(),
+			time: new Date().toTimeString().slice(0, 8)
 		})
 	}
 
