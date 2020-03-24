@@ -21,7 +21,7 @@
     "test": "node test/test.js",
     "build": "browserify client-src/index.js | uglifyjs -m -o static/build.js && node build/putInfoIntoHtml.js",
     "watch": "watchify client-src/index.js -d -o static/build.js",
-    "start": "psy start -n justlogin -- node . 80",
+    "start": "psy start -n justlogin -- node . 5878",
     "stop": "psy stop justlogin || true"
   },
   "dependencies": {
