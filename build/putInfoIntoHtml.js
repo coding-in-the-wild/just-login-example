@@ -1,24 +1,12 @@
-var fs = require('fs')
-var brucedown = require('brucedown')
-var path = require('path')
+const fs = require('fs')
+const path = require('path')
+const micromark = require('micromark')
+const highlight_javascript = require('./hightlightJavascript.js')
 
-var filePath = path.join(__dirname, 'info.md')
-fs.readFile(filePath, {encoding: 'utf8'}, function (err, infoMd) {
-	if (err) throw err
+const read = relative_path => fs.readFileSync(path.join(__dirname, relative_path), { encoding: 'utf8' })
+const write = (relative_path, contents) => fs.writeFileSync(path.join(__dirname, relative_path), contents, { encoding: 'utf8' })
 
-	brucedown(infoMd, function (err, html) {
-		if (err) throw err
-
-		filePath = path.join(__dirname, 'indexTemplate.html')
-		fs.readFile(filePath, {encoding: 'utf8'}, function (err, indexHtml) {
-			if (err) throw err
-
-			var fullHtml = indexHtml.replace('<!--DOCUMENTATION_GOES_HERE-->', html)
-
-			filePath = path.join(__dirname, '../static/index.html')
-			fs.writeFile(filePath, fullHtml, function (err) {
-				if (err) throw err
-			})
-		})
-	})
-})
+const info_html = micromark(read('info.md'))
+const info_html_highlit = highlight_javascript(info_html)
+const full_html = read('indexTemplate.html').replace('<!--DOCUMENTATION_GOES_HERE-->', info_html_highlit)
+write('../static/index.html', full_html)

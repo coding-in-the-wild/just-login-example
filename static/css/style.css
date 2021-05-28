@@ -14,3 +14,15 @@ h2 code, h3 code {
 	font-size: inherit;
 	white-space: inherit;
 }
+
+pre, code { background-color: #282923; color: #F8F8F2; }
+.hljs-attr {}
+.hljs-keyword { color: #F92472; }
+.hljs-literal { color: AC80FF; }
+.hljs-comment { color: #74705D; }
+.hljs-function { color: #67D8EF; }
+.hljs-title { color: #A6E22B; }
+.hljs-params { color: #FD9622; }
+.hljs-built_in { color: #67D8EF; }
+.hljs-number { color: #AC80FF; }
+.hljs-string { color: #E7DB74; }
