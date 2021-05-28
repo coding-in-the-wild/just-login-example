@@ -1,10 +1,12 @@
 var url = require('url')
-var ecstatic = require('ecstatic')
+var path = require('path')
+var send = require('send')
 
 var config = require('../config.json')
-var serve = ecstatic({
-	root: config.staticDir
-})
+var staticOpts = {
+	// https://github.com/pillarjs/send#options
+	root: path.join(__dirname, '..', config.staticDir),
+}
 
 module.exports = function (core) {
 	return function requestHandler(req, res) {
@@ -20,7 +22,7 @@ module.exports = function (core) {
 				res.end()
 			})
 		} else {
-			serve(req, res)
+			send(req, parsed.pathname, staticOpts).pipe(res)
 		}
 	}
 }

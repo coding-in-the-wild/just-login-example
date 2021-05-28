@@ -1,13 +1,16 @@
-var Level = require('level')
-var config = require('./config.json')
-var Server = require('./server-src/index.js')
+const levelup = require('levelup')
+const encode = require('encoding-down')
+const jsondown = require('jsondown')
 
-var port = process.argv[2] || config.port || 80
+const config = require('./config.json')
+const Server = require('./server-src/index.js')
 
-Level(__dirname + '/mydb', function (err, db) {
+const port = process.argv[2] || config.port || 80
+
+levelup(encode(jsondown('./mydb.json')), function (err, db) {
 	if (err) throw err
 
-	var server = Server(db)
+	const server = Server(db)
 	server.listen(port)
 
 	console.log('Server listening on port ' + port)
